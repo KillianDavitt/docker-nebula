@@ -97,6 +97,8 @@ stack new my-project yesod-sqlite && cd my-project
 
 This command uses stack to create a skeleton project called `my-project` in a subdirectory of the same name. Obviously, you can call the project whatever you like. That project is configured to use Yesod with an SQLite database backend by declaring `yesod-sqlite` as the *template* to use. Stack uses a template system with a repository of open source templates that let you to create all kinds of projects with all kinds of configurations. `yseod-sqlite` is an example, and its generally a good starting point, supporting a baseline Yesod web application with sqlite database support. Consult the [Stack template repository](https://github.com/commercialhaskell/stack-templates) or run `stack templates` for more details of alternative templates, or write your own. 
 
+
+
 ## Enable Docker as the build and execution platform ##
 The good news is that Stack has Docker support out-of-the-box, and it is a relatively simple fix to enable it for your project. Open stack.yaml and add the following configuration to the file. 
 
@@ -115,6 +117,14 @@ There are various guides online that you may come accross that detail the creati
 
 ## Compile your project ##
 Assuming that Stack/Docker integration is supported:
+
+Now lets be sure the command line tools are built:
+
+```
+#!bash
+
+stack build yesod-bin cabal-install --install-ghc
+```
 
 Next run `stack setup`. In you forget to do this, and carry on to try to build your project, Stack will stop and remind you. 
 
@@ -195,3 +205,5 @@ alias docker-yesod-dev="stack --docker-run-args='--net=bridge --publish=3000:300
 
 ```
 whereupon you can simply call `docker-yesod-dev` from the command line to launch your project in development mode. If you modify code while `yesod devel` is not running, and then start `yesod devel`, it will notice that the compiled application is out of date and recompile before launching. Most Yesod developers simply leave `yesod devel` running, allowing it to rebuild and relaunch their web application as they work.
+
+
