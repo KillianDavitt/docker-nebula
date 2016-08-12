@@ -111,7 +111,7 @@ There are various guides online that you may come accross that detail the creati
 
 **Windows Users:** Note that Stack/Docker integration presently does not work for Windows - if that's you then for the moment at least you will have to manage Docker instance configuration and execution. See [this blog](https://ilikewhenit.works/blog/1) will help. You will end up doing more manual configuration and running commands like `sudo docker build -t yourname/yesod ./` to build your software instead of ...
 
-**All Users:** I have noticed that Docker can be a little temperamental. If a command does not execute properly, try again, perhaps restarting Docker. All following commands can be interrupted and restarted, so don't worry about breaking anything. If a step seems not to be progressing, give it a little time, but if needs be, kill it and rerun. If this does not work, dig into Docker documentation and/or support. 
+**All Users:** I have noticed that Docker can be a little temperamental. If a command does not execute properly, try again, perhaps restarting Docker. All following commands can be interrupted and restarted, so don't worry about breaking anything. If a step seems not to be progressing, give it a little time, but if needs be, kill it and rerun. If this does not work, dig into Docker documentation and/or support. To test if Docker is operating correctly, call `docker info`, which should return immediately with status information. 
 
 ## Compile your project ##
 Assuming that Stack/Docker integration is supported:
@@ -154,13 +154,30 @@ The argument `--docker-run-args='--net=bridge --publish=3000:3000'` is necessary
 
 We can now use our running application. Open a web browser and point it to `http://localhost:3000` which is the default link that `yesod devel` exposes your application on. 
 
-You should now see a Default site home page with some test functionality. If you do, you are done. 
+You should now see a Default site home page with some test functionality. If you do, you are essentially done. If you wish, you can shutdown the web application by typing `quit` into the command line.
 
+## 
+When you launch your web application for the first time, you may notice a message in the execution trace as follows:
+
+```
+#!bash
+
+Warning: The package list for 'hackage.haskell.org' does not exist. Run 'cabal update' to download it.
+```
+
+You can resolve this by executing the following:
+
+```
+#!bash
+
+stack exec -- cabal update
+```
+This is another "some time" command. I have noticed it fail with an "out of memory" error sometimea. Just rerun till it completes.
 
 ## Develop your Project ##
-With the previous steps completed successfully, you can now develop without further consideration for the toolchain setup. As is normal with Yesod development, if you change Project files, `yesod devel` should notice these changes and prompt a recompile and launch of your project. 
+With the previous steps completed successfully, you can now develop without further consideration for the toolchain setup. As is normal with Yesod development, if you change Project files, `yesod devel` should notice these changes and prompt a recompile and relaunch of your web application. 
 
-If you close down your executing project, to restart it you will need to use the same launch command as before:
+If you close down your executing web application, to restart it you will need to use the same launch command as before:
 
 ```
 #!bash
@@ -177,4 +194,6 @@ It is probably worth creating an alias for this for future use:
 alias docker-yesod-dev="stack --docker-run-args='--net=bridge --publish=3000:3000' exec -- yesod devel"
 
 ```
-whereupon you can simply call `docker-yesod-dev` from the command line to launch your project in development mode. If you modify code and then restart `yesod devel`, it will notice that the compiled application is out of date and recompile before launching. Most Yesod developers simply leave `yesod devel` running.
+whereupon you can simply call `docker-yesod-dev` from the command line to launch your project in development mode. If you modify code while `yesod devel` is not running, and then start `yesod devel`, it will notice that the compiled application is out of date and recompile before launching. Most Yesod developers simply leave `yesod devel` running, allowing it to rebuild and relaunch their web application as they work.
+
+
