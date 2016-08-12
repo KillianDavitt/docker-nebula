@@ -182,7 +182,7 @@ You can resolve this by executing the following:
 
 stack exec -- cabal update
 ```
-This is another "some time" command. I have noticed it fail with an "out of memory" error sometimea. Just rerun till it completes.
+This is another "some time" command. I have noticed it fail with an "out of memory" error sometimes. Just rerun till it completes.
 
 ## Develop your Project ##
 With the previous steps completed successfully, you can now develop without further consideration for the toolchain setup. As is normal with Yesod development, if you change Project files, `yesod devel` should notice these changes and prompt a recompile and relaunch of your web application. 
