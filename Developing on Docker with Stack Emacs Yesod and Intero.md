@@ -101,6 +101,13 @@ $ stack new my-project yesod-sqlite && cd my-project
 
 This command uses stack to create a skeleton project called `my-project` in a subdirectory of the same name. Obviously, you can call the project whatever you like. That project is configured to use Yesod with an SQLite database backend by declaring `yesod-sqlite` as the *template* to use. Stack uses a template system with a repository of open source templates that let you to create all kinds of projects with all kinds of configurations. `yseod-sqlite` is an example, and its generally a good starting point, supporting a baseline Yesod web application with sqlite database support. Consult the [Stack template repository](https://github.com/commercialhaskell/stack-templates) or run `stack templates` for more details of alternative templates, or write your own. 
 
+Of course, you don't necessarily want to create a Yesod based project and the stack template system can be used to create all kinds of project types. For example, if you wanted to build a REST based web service, then [Servant](http://haskell-servant.readthedocs.io/en/stable/) is a good choice:
+
+```
+#!bash
+$ stack new my-project servant && cd my-project
+```
+
 ## 2.2 Enable Docker as the build and execution platform ##
 The good news is that Stack has Docker support out-of-the-box, and it is a relatively simple fix to enable it for your project. Open stack.yaml and add the following configuration to the file. 
 
@@ -218,7 +225,9 @@ Each provisioning method has advantages and disadvantages. The _Debian_ based so
 
 We will now explain how to provision a node in the SCSSNebula, fully configured to act as a docker host. We must provision a node using one of the UI's provided by SCSSNebula, using a disk image supplied, and then install docker on this node. Once you have a suitably configured virtual machine, the disk image associated with it can be used as a basis for new virtual machines so that you do not have to repeat this configuration. We conclude this section by explaining how to save the disk image for future use. 
 
-Note that you can achieve this via the updated UI available to SCSSNebula users [here](http://scssnebulateaching2.scss.tcd.ie:9869/), or via the older interfaces available for [staff](http://scssnebularesearch.scss.tcd.ie:4567/ui) or [students](http://scssnebulateaching.scss.tcd.ie:4567/ui). The steps for each are different: we include both methods next before proceeding to installation of _Docker_. 
+Note that you can achieve this via the updated UI available to SCSSNebula users [here](http://scssnebulateaching2.scss.tcd.ie:9869/), or via the older interfaces available for [staff](http://scssnebularesearch.scss.tcd.ie:4567/ui) or [students](http://scssnebulateaching.scss.tcd.ie:4567/ui). Note that yo may not have access to all interfaces. The steps for each are different: we include both methods next before proceeding to installation of _Docker_. 
+
+Note also that you will most likely not be able to access these UIs from outside the college networks. 
 
 ### 3.1.1 Create a virtual machine using the newer UI ###
 
@@ -774,6 +783,8 @@ Log out of your virtual machine and login to your docker-machine node. perform t
 This shows a single docker host, named test. `docker-machine` keeps track of all docker hosts you create on the cloud, making it very easy to interact with them via the local `docker` client. Now lets first use `docker-machine` to initialise the necessary environment variables to point the local `docker` tool to that host and invoke a container on that node. 
 
 *GOTCHA: Note that when accessing a remote docker engine with your docker client, you can get an error that reports that your docker client version is out of step with your docker engine version. This can be resolved by setting the environment variable `DOCKER_API_VERSION` on the client machine, with the value of the reported server engine version number. Provided the client is at least as up to date as the server, this will work. If the client is out of date, upgrade your installation.*
+
+*GOTCHA 2: make sure that you do not have `HTTP_PROXY` environment variable set when running this command, as it will pick it up if set and attempt to access the target docker server via the configured proxy.*
 
     $  eval $(docker-machine env test)     # points docker tool to docker host 'test'
     $  export DOCKER_API_VERSION=1.22      # if running a docker command returns an API error
@@ -1597,5 +1608,4 @@ Notice the output, which is different from that generated when we run the comman
 
 # 8 Thanks#
 Thanks to Prof. Stefan Weber, who helped resolve the many networking issues that arose. Thanks also to the system administration team behind help@scss.tcd.ie for all their help. Thanks finally to the folks at docker.com and the various internet bloggers who share their personal experience using technology like Docker, too many to mention but all invaluable. 
-
 
