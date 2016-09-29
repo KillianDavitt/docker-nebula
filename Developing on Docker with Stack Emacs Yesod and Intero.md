@@ -278,7 +278,7 @@ There are various ways to install Docker onto your new Debian node, but this see
 $ wget -qO- https://get.docker.com/ | sh
 ```
 
-Note that you will need `wget` to run that command, which may require you to perform `sudo apt-get wget` on the command line to install it. Note also that you will need `http_proxy` and `https_proxy`set correctly. Check in your environment (run `env` from the command line), and set them to `http://www-proxy.cs.tcd.ie:8080` if its not.
+Note that you will need `wget` to run that command, which may require you to perform `sudo apt-get wget` on the command line to install it. Note also that you will need `http_proxy` and `https_proxy`set correctly. Check in your environment (run `env` from the command line), and set them to `http://www-proxy.scss.tcd.ie:8080` if its not.
 
 Once installed, test the docker installation by running:
 
@@ -302,6 +302,8 @@ To generate this message, Docker took the following steps:
     executable that produces the output you are currently reading.
  4. The Docker daemon streamed that output to the Docker client, which sent it
     to your terminal.
+
+If that doesn't work, and if you get a connection error, then docker is not picking up web proxy details. Solve this by editing `/etc/default/docker` and setting `http_proxy` to `http://www-proxy.scss.tcd.ie:8080/`. Restart the docker service with `/etc/init.d/docker restart`.
 
 To try something more ambitious, you can run an Ubuntu container with:
 
