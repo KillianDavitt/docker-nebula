@@ -235,7 +235,7 @@ Note also that you will most likely not be able to access these UIs from outside
 
 1. Open the [user interface](http://scssnebulaselfservice.scss.tcd.ie:9869/).
 
-2. Click on the *Images* sub-menu option (found in the *Virtual Resources* menu), select the `[VM] DebianWheezy [Research Ver 1.2]` image, and click the `clone` button. In the revealed pane, give the new image a name. We will use this image for the creation of our first virtual machine, but we will need to configure some files in it, so lets start by building a virtual machine from this image. The image is large so the clone creation will take some time. Next, select the clone you have created from the *Images* list, mark the clone as persistent by selecting the `make persistent` in the revealed panel (select the edit icon and change the value).
+2. Click on the *Images* sub-menu option (found in the *Virtual Resources* menu), select the `[VM] DebianJessie [Research Ver 1.1]` image, and click the `clone` button. In the revealed pane, give the new image a name. We will use this image for the creation of our first virtual machine, but we will need to configure some files in it, so lets start by building a virtual machine from this image. The image is large so the clone creation will take some time. Next, select the clone you have created from the *Images* list, mark the clone as persistent by selecting the `make persistent` in the revealed panel (select the edit icon and change the value).
 
 3. Next, we must create a Template. Select the *Templates* sub-menu in the *Virtual Resources* menu create a new template. The template system is complex but we will perform a minimal configuration. 
  
@@ -258,7 +258,7 @@ We are now going to create an OpenNebula Debian Linux node that we will use to r
 
 1. Open the UI for [staff](http://scssnebularesearch.scss.tcd.ie:4567/ui).
 
-2. Click on the *Storage* menu option, find the `[VM] DebianWheezy [Research Ver 1.2]` image, and select the `clone` button. In the revealed pane, give the new image a name and click `clone`.  Note that the cloning of the image will take longer than the GUI suggests, so wait a minute or two before proceeding. Next, select the clone in the list, mark the clone as persistent in the image information pane.
+2. Click on the *Storage* menu option, find the `[VM] DebianJessie [Research Ver 1.1]` image, and select the `clone` button. In the revealed pane, give the new image a name and click `clone`.  Note that the cloning of the image will take longer than the GUI suggests, so wait a minute or two before proceeding. Next, select the clone in the list, mark the clone as persistent in the image information pane.
 
 3. Click on *Compute* menu option, and select the `new` button to create a new virtual machine. In the revealed pane, give the machine a name, choose an instance type from the dropdown ( I tend to go for `64bit-2CPU-2048MW-withVNC` but choose as you prefer), select the image you just created in the images list. Select a network (there is probably only one option) and click `Create`. Again, you must wait some time, perhaps as long as 5 minutes before proceeding.
 
@@ -417,7 +417,7 @@ If you see that output, then you are all set to proceed.
 `docker-machine` supports the creation of Docker machines on a number of cloud platforms. There is an OpenNebula plugin that makes it possible to use `docker-machine` with OpenNebula clouds, such as SCSSNebula. We will install both `docker-machine` and the plugin, assuming our target machine is an SCSSNebula node based on Debian. Consult [documentation](https://docs.docker.com/machine/install-machine/) for details on how to install on other platforms.  
 
 #### Install Docker-machine ####
-Note that all the following presumes that you have network access on the install machine. Note also that if you installed Docker on a Mac or a Windows machine using the recommended methods, then you will already have docker-machine installed: proceed to the section on installation of the *docker-machine-opennebula plugin*.For the remainder of this section we will presume that the target machine is a standard DebianWheezy instance in the SCSSNebula cloud, built using the process described above.
+Note that all the following presumes that you have network access on the install machine. Note also that if you installed Docker on a Mac or a Windows machine using the recommended methods, then you will already have docker-machine installed: proceed to the section on installation of the *docker-machine-opennebula plugin*.For the remainder of this section we will presume that the target machine is a standard DebianJessie instance in the SCSSNebula cloud, built using the process described above.
 
 To install docker-machine, proceed as follows:
 
