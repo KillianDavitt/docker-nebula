@@ -278,7 +278,7 @@ There are various ways to install Docker onto your new Debian node, but this see
 $ wget -qO- https://get.docker.com/ | sh
 ```
 
-Note that you will need `wget` to run that command, which may require you to perform `sudo apt-get wget` on the command line to install it. Note also that you will need `http_proxy` and `https_proxy`set correctly. Check in your environment (run `env` from the command line), and set them to `http://proxy.cs.tcd.ie:8080` if its not.
+Note that you will need `wget` to run that command, which may require you to perform `sudo apt-get wget` on the command line to install it. Note also that you will need `http_proxy` and `https_proxy`set correctly. Check in your environment (run `env` from the command line), and set them to `http://www-proxy.cs.tcd.ie:8080` if its not.
 
 Once installed, test the docker installation by running:
 
