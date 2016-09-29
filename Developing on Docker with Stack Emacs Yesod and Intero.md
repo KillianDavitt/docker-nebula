@@ -348,11 +348,12 @@ If that doesn't work, and if you get a connection error, then docker is not pick
 
     mkdir /etc/systemd/system/docker.service.d
 
-2. Now create a file called /etc/systemd/system/docker.service.d/http-proxy.conf that adds the HTTP_PROXY environment variable:
+2. Now create a file called `/etc/systemd/system/docker.service.d/http-proxy.conf` that adds the HTTP_PROXY environment variable:
 
         [Service]
         Environment="HTTP_PROXY=http://proxy.example.com:80/"
-    If you have internal Docker registries that you need to contact without proxying you can specify them via the NO_PROXY environment variable:
+
+    If you have internal Docker registries that you need to contact without proxying you can specify them via the `NO_PROXY` environment variable:
 
         Environment="HTTP_PROXY=http://proxy.example.com:80/"
         Environment="NO_PROXY=localhost,127.0.0.0/8,docker-registry.somecorporation.com"
