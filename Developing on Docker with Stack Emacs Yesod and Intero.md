@@ -223,7 +223,7 @@ Each provisioning method has advantages and disadvantages. The _Debian_ based so
 
 ## 3.1 Create a _Debian_ SCSSNebula docker host ##
 
-**Note that since this guide was written, the system administrators have retired the 'older' UI to the SCSSNebula system, and have deployed a newer 'sunstone' UI. The sections that follow can be ignored therefore, but I am leaving them in place because you may come across the older interface in your career, and thus it may be useful. This guide will stay available indefinitely - feel free to bookmark for future use. **
+**Note that since this guide was written, the system administrators have retired the 'older' UI to the SCSSNebula system, and have deployed a newer 'sunstone' UI. The subsections that follow that are concerned with the older UI can be ignored therefore, but I am leaving them in place because you may come across the older interface in your career, and thus it may be useful. This guide will stay available indefinitely - feel free to bookmark for future use. **
 
 We will now explain how to provision a node in the SCSSNebula, fully configured to act as a docker host. We must provision a node using one of the UI's provided by SCSSNebula, using a disk image supplied, and then install docker on this node. Once you have a suitably configured virtual machine, the disk image associated with it can be used as a basis for new virtual machines so that you do not have to repeat this configuration. We conclude this section by explaining how to save the disk image for future use. 
 
