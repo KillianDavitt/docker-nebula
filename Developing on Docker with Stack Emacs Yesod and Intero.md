@@ -313,7 +313,7 @@ Server:
 Docker is installed. Next let's test the docker installation by running a simple container: 
 
 ```
-!#bash
+#!bash
 $ docker run hello-world
 Unable to find image 'hello-world:latest' locally
 latest: Pulling from library/hello-world
