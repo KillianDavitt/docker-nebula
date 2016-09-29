@@ -310,7 +310,7 @@ Server:
  OS/Arch:      linux/amd64
 ```
 
-Docker is installed. Next let's test the docker installation by running a simple container: 
+Docker is installed. However, we do not have Docker configured to access Docker hub, the remote source of docker containers. Let's test the docker installation by running a simple container, expecting the command to not list the following successful output (if it does, you are all set): 
 
 ```
 #!bash
@@ -342,9 +342,37 @@ Share images, automate workflows, and more with a free Docker Hub account:
 For more examples and ideas, visit:
  https://docs.docker.com/engine/userguide/
 ```
-If that doesn't work, and if you get a connection error, then docker is not picking up web proxy details. Solve this by editing `/etc/default/docker` and setting `http_proxy` to `http://www-proxy.scss.tcd.ie:8080/`. Restart the docker service with `/etc/init.d/docker restart` or `service docker restart`.
+If that doesn't work, and if you get a connection error, then docker is not picking up web proxy details. To solve this we need to configure Docker to use the scss web proxy. This is done in different ways depending on the specific OS we are running on. For DebianJessie we perform the following:
 
-If you get that working, Docker is now running on your node. However, if the `docker run` command did not succeed, you most likely have a network configuration problem.It may be worth your while reviewing the network configuration steps described in the section below on creating a _boot2docker_ based host, to see if you can diagnose and correct the problem. 
+    1. First, create a systemd drop-in directory for the docker service:
+
+        mkdir /etc/systemd/system/docker.service.d
+
+    2. Now create a file called /etc/systemd/system/docker.service.d/http-proxy.conf that adds the HTTP_PROXY environment variable:
+
+            [Service]
+            Environment="HTTP_PROXY=http://proxy.example.com:80/"
+        If you have internal Docker registries that you need to contact without proxying you can specify them via the NO_PROXY environment variable:
+
+            Environment="HTTP_PROXY=http://proxy.example.com:80/"
+            Environment="NO_PROXY=localhost,127.0.0.0/8,docker-registry.somecorporation.com"
+
+    3. Flush changes:
+
+        $ sudo systemctl daemon-reload
+
+    4. Verify that the configuration has been loaded:
+
+        $ sudo systemctl show --property Environment docker
+        Environment=HTTP_PROXY=http://proxy.example.com:80/
+
+    5. Restart Docker:
+
+        $ sudo systemctl restart docker
+
+Now try rerunning `docker run hello-world` and if everything works, you will see the output as listed above. 
+
+If you get that working, Docker is now running on your node. However, if the `docker run` command did not succeed, you most likely have a network configuration problem. It may be worth your while reviewing the network configuration steps described in the section below on creating a _boot2docker_ based host, to see if you can diagnose and correct the problem. 
 
 ### 3.1.3 Final configuration and baking###
 
