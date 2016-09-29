@@ -286,7 +286,7 @@ Out node is now up to date. There are various ways to install Docker onto your n
 $ wget -qO- https://get.docker.com/ | sh
 ```
 
-This should kick off a long installation process. If it doesn't, then you will probably need `http_proxy` and `https_proxy`set correctly. Check in your environment (run `env` from the command line), and set them to `http://www-proxy.scss.tcd.ie:8080` if its not. Note also that you will need `wget` to run that command, which may require you to perform `sudo apt-get wget` on the command line to install it. 
+This should kick off a long installation process. If it doesn't, then you will probably need `http_proxy` and `https_proxy`set correctly. Check in your environment (run `env` from the command line), and set them both to `http://www-proxy.scss.tcd.ie:8080` they are not set. Note also that you will need `wget` to run that command, which may require you to perform `sudo apt-get wget` on the command line to install it. 
 
 Once the installation is finished, test the docker installation by running:
 
