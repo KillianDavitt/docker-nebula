@@ -303,8 +303,6 @@ To generate this message, Docker took the following steps:
  4. The Docker daemon streamed that output to the Docker client, which sent it
     to your terminal.
 
-If that doesn't work, and if you get a connection error, then docker is not picking up web proxy details. Solve this by editing `/etc/default/docker` and setting `http_proxy` to `http://www-proxy.scss.tcd.ie:8080/`. Restart the docker service with `/etc/init.d/docker restart`.
-
 To try something more ambitious, you can run an Ubuntu container with:
 
 $ docker run -it ubuntu bash
@@ -315,8 +313,9 @@ Share images, automate workflows, and more with a free Docker Hub account:
 For more examples and ideas, visit:
  https://docs.docker.com/engine/userguide/
 ```
+If that doesn't work, and if you get a connection error, then docker is not picking up web proxy details. Solve this by editing `/etc/default/docker` and setting `http_proxy` to `http://www-proxy.scss.tcd.ie:8080/`. Restart the docker service with `/etc/init.d/docker restart`.
 
-Docker is now running on your node. However, if the `docker run` command did not succeed, you most likely have a network configuration problem.It may be worth your while reviewing the network configuration steps described in the section below on creating a _boot2docker_ based host, to see if you can diagnose and correct the problem. 
+If you get that working, Docker is now running on your node. However, if the `docker run` command did not succeed, you most likely have a network configuration problem.It may be worth your while reviewing the network configuration steps described in the section below on creating a _boot2docker_ based host, to see if you can diagnose and correct the problem. 
 
 ### 3.1.3 Final configuration and baking###
 
