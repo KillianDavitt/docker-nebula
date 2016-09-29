@@ -308,11 +308,11 @@ Server:
  Git commit:   23cf638
  Built:        Thu Aug 18 05:02:53 2016
  OS/Arch:      linux/amd64
-````
+```
 
 Docker is installed. Next let's test the docker installation by running a simple container: 
 
-````
+```
 !#bash
 $ docker run hello-world
 Unable to find image 'hello-world:latest' locally
