@@ -344,31 +344,31 @@ For more examples and ideas, visit:
 ```
 If that doesn't work, and if you get a connection error, then docker is not picking up web proxy details. To solve this we need to configure Docker to use the scss web proxy. This is done in different ways depending on the specific OS we are running on. For DebianJessie we perform the following:
 
-    1. First, create a systemd drop-in directory for the docker service:
+1. First, create a systemd drop-in directory for the docker service:
 
-        mkdir /etc/systemd/system/docker.service.d
+    mkdir /etc/systemd/system/docker.service.d
 
-    2. Now create a file called /etc/systemd/system/docker.service.d/http-proxy.conf that adds the HTTP_PROXY environment variable:
+2. Now create a file called /etc/systemd/system/docker.service.d/http-proxy.conf that adds the HTTP_PROXY environment variable:
 
-            [Service]
-            Environment="HTTP_PROXY=http://proxy.example.com:80/"
-        If you have internal Docker registries that you need to contact without proxying you can specify them via the NO_PROXY environment variable:
+        [Service]
+        Environment="HTTP_PROXY=http://proxy.example.com:80/"
+    If you have internal Docker registries that you need to contact without proxying you can specify them via the NO_PROXY environment variable:
 
-            Environment="HTTP_PROXY=http://proxy.example.com:80/"
-            Environment="NO_PROXY=localhost,127.0.0.0/8,docker-registry.somecorporation.com"
+        Environment="HTTP_PROXY=http://proxy.example.com:80/"
+        Environment="NO_PROXY=localhost,127.0.0.0/8,docker-registry.somecorporation.com"
 
-    3. Flush changes:
+3. Flush changes:
 
-        $ sudo systemctl daemon-reload
+    $ sudo systemctl daemon-reload
 
-    4. Verify that the configuration has been loaded:
+4. Verify that the configuration has been loaded:
 
-        $ sudo systemctl show --property Environment docker
-        Environment=HTTP_PROXY=http://proxy.example.com:80/
+    $ sudo systemctl show --property Environment docker
+    Environment=HTTP_PROXY=http://proxy.example.com:80/
 
-    5. Restart Docker:
+5. Restart Docker:
 
-        $ sudo systemctl restart docker
+    $ sudo systemctl restart docker
 
 Now try rerunning `docker run hello-world` and if everything works, you will see the output as listed above. 
 
