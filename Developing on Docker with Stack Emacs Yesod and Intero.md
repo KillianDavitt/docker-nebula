@@ -227,13 +227,13 @@ Each provisioning method has advantages and disadvantages. The _Debian_ based so
 
 We will now explain how to provision a node in the SCSSNebula, fully configured to act as a docker host. We must provision a node using one of the UI's provided by SCSSNebula, using a disk image supplied, and then install docker on this node. Once you have a suitably configured virtual machine, the disk image associated with it can be used as a basis for new virtual machines so that you do not have to repeat this configuration. We conclude this section by explaining how to save the disk image for future use. 
 
-Note that you can achieve this via the updated UI available to SCSSNebula users available [here](http://scssnebulaselfservice.scss.tcd.ie:9869/) for staff and students, or via the older interfaces available for [staff](http://scssnebularesearch.scss.tcd.ie:4567/ui) only. Note that you may not have access to all interfaces. The steps for each are different: we include both methods next before proceeding to installation of _Docker_. 
+Note that you can achieve this via the updated UI available to SCSSNebula users available [here](https://scssnebulaselfservice.scss.tcd.ie) for staff and students, or via the older interfaces available for [staff](http://scssnebularesearch.scss.tcd.ie:4567/ui) only. Note that you may not have access to all interfaces. The steps for each are different: we include both methods next before proceeding to installation of _Docker_. 
 
 Note also that you will most likely not be able to access these UIs from outside the college networks. 
 
 ### 3.1.1 Create a virtual machine using the newer UI ###
 
-1. Open the [user interface](http://scssnebulaselfservice.scss.tcd.ie:9869/).
+1. Open the [user interface](https://scssnebulaselfservice.scss.tcd.ie).
 
 2. Click on the *Images* sub-menu option (found in the *Virtual Resources* menu), select the `[VM] DebianJessie [Research Ver 1.1]` image, and click the `clone` button. In the revealed pane, give the new image a name. We will use this image for the creation of our first virtual machine, but we will need to configure some files in it, so lets start by building a virtual machine from this image. The image is large so the clone creation will take some time. Next, select the clone you have created from the *Images* list, mark the clone as persistent by selecting the `make persistent` in the revealed panel (select the edit icon and change the value).
 
@@ -406,7 +406,7 @@ We can create boot2docker virtual machines using either a UI based process along
 
 ### 3.2.1 Create virtual machine using the newer UI ###
 
-1. Open the [user interface](http://scssnebulaselfservice.scss.tcd.ie:9869/).
+1. Open the [user interface](https://scssnebulaselfservice.scss.tcd.ie).
 
 2. Click on the *Images* sub-menu option (found in the *Virtual Resources* menu), and look for an `[VM] boot2docker` image.If there is no such image, you will need to install the `boot2docker` image into the SCSSNebula as follows:
 
