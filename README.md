@@ -14,8 +14,8 @@ Let's first briefly explain what each component is and what each does for us. If
 
 In summary, we will create and manage Yesod projects using Stack, edit them using Emacs configured to give us a good IDE like experience, and compile them and run them on a containerised virtual machine light that replicates our deployment environment and simplifies deployment greatly. Getting all this to work can be a little tricky however. So what follows is a step by step repeatable workflow, beginning with how to install the software and following with the detail of flag, settings and procedures to follow to make this toolchain work well together. 
 
-* [google](www.google.ie)
-* []()
+* [1 Stack](stack.md)
+* [2 Stack](yesod.md)
 *
 *
 *
