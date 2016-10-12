@@ -1,3 +1,6 @@
+Forked from: https://bitbucket.org/esjmb/teaching/wiki/Developing_on_Docker_with_Stack_Emacs_Yesod_and_Intero
+Created by Prof. Stephen Barrett
+
 This page described how to setup and configure a development workflow for building [Yesod](http://yesodweb.com) based applications (but also any other haskell development) using the [Stack](http://haskellstack.org) build system, with all compilation and execution running on a [Docker](http://docker.com) instance that isolates the compilation/execution of your system from the peculiarities of your host operating system dependencies. It also explains how to configure the [Emacs](http://www.gnu.org/s/emacs/) to use [Intero](http://commercialhaskell.github.io/intero/), which is the best out-of-the-box solution for emacs based Haskell development using Emacs, bar none. 
 
 Let's first briefly explain what each component is and what each does for us. If you don't want to use each when I'm done, I've not done my job.
