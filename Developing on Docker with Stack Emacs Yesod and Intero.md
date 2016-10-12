@@ -4,9 +4,6 @@ Let's first briefly explain what each component is and what each does for us. If
 
 * [Stack](http://haskellstack.org) is a build system for haskell. It is cross platform, so providing a single and simple elegant method for haskell development on any OS. It takes care of installing necessary haskell backends for you, installing all packages your project needs dynamically (say goodbye to dependency hell), it builds, tests and benchmarks your project.Think of it as a replacement to cabal and more. Use it for all your Haskell work.
 
-* [Emacs](http://www.gnu.org/s/emacs/) is one of the longest serving text editors out there, but as Emacs users know, it is better to think of it as a programmable programming environment. Have a look at the [Emacs Rock's](http://emacsrocks.com) series to get a feel for the productivity that efficient and experienced Emacs use can deliver. There are other choices, such as [vim](http://www.vim.org) and [atom](http://atom.io) and so forth. Check them out, but Emacs stands head and shoulders above them all for a great many professional developers.
-
-* [Intero](http://commercialhaskell.github.io/intero/) is a complete interactive development system for haskell developers using emacs. It provides on-the-fly type checking, inline text completion, definition jumping, and a whole host of other features beautifully and professionally crafted. The experience of most haskell developers who try it is one of pleasant surprise: everything works out of the box. It is 'opinionated' in that it makes design decisions that constrain choices (such as requiring Stack - no bad thing) but the consensus broadly is that anything the [CommericalHaskell](https://github.com/commercialhaskell) team opine is worth taking seriously (and Stack is one of theirs also). 
 
 * [Docker](http://docker.com) is a software containerisation platform, which makes it possible to wrap your software and development tools with one of a range of flavours of lightweight VMs encompassing operating system and toolset environments, irrespective of what host OS you use. What this gives you is consistency and independence, allowing you to pick stable development environments to host your toolsets. What sounds like an unnecessary layer in fact greatly simplifies software development. Check out this [blog post](http://www.ybrikman.com/writing/2015/05/19/docker-osx-dev/) for more details. We will use Docker to host our Haskell build and execute toolchain, so that irrespective of what host OS we are working from, our development work will in some sense be performed on the chosen Docker instance. 
 
@@ -29,40 +26,6 @@ Details [here](https://docs.haskellstack.org/en/stable/install_and_upgrade/#mac-
 $ brew install haskell-stack
 ```
   
-## 1.3 Install Emacs and Intero ##
-There are many flavours of emacs, so it might be worth researching what version you want to use, but for vannilla experience, I like [railwaycat's port](https://github.com/railwaycat/homebrew-emacsmacport), which handles some details of the Mac OS X operating system environment better. Install this as follows:
-
-```
-#!bash
-
-$ brew tap railwaycat/emacsmacport
-$ brew install emacs-mac
-```
-You can also `brew install emacs` to get the standard emacs implementation. For installing emacs on other platforms, see [here](https://www.gnu.org/software/emacs/manual/html_node/efaq/Installing-Emacs.html).
-
-Once you have installed Emacs there are a multitude of ways to customise it, with thousands of packages to choose from. We will skip all this fun for the present and consider only the configuration to enable Intero.
-
-You will need to create or open a file called ~/.emacs.d/init.el. This is the file that Emacs uses to configure on load. To install Intero we need the following code:
-
-
-```
-#!elisp
-
-;; If you don't have MELPA in your package archives:
-(require 'package)
-(add-to-list
-  'package-archives
-  '("melpa" . "http://melpa.org/packages/") t)
-(package-initialize)
-(package-refresh-contents)
-
-;; Install Intero
-(package-install 'intero)
-(add-hook 'haskell-mode-hook 'intero-mode)
-```
-
-You will come across other code that achieves the same thing using different Emacs package managers etc. but this is sufficient. On the first occasion that you open a haskell file, Emacs will automatically download (you will need internet access) Intero and install it. Intero will itself install software, including Haskell backends. All this can take some time, so do not be concerned if the opening of a file in Emacs is slow on the first occasion. If you prefer, you can run M-x package-install from the emacs command line to pre-install Intero before you begin Haskell development. Subsequent to installation, every time you open a Haskell file for the first time in an Emacs session, Intero will boot up and this may cause a momentary pause. Once running, there will be no further delay when opening other Haskell files. Intero is fast and elegant once booted. 
-
 ## 1.4 Install Docker ##
 Docker install instructions are to be found [here](https://docs.docker.com/engine/installation/). For Mac OS X, visit [this page](https://docs.docker.com/docker-for-mac/) and work your way through the full 'Getting Started' section. It should take no more than ten minutes and you will learn all you need to know for our purposes.
 
@@ -223,7 +186,6 @@ Each provisioning method has advantages and disadvantages. The _Debian_ based so
 
 ## 3.1 Create a _Debian_ SCSSNebula docker host ##
 
-**Note that since this guide was written, the system administrators have retired the 'older' UI to the SCSSNebula system, and have deployed a newer 'sunstone' UI. The subsections that follow that are concerned with the older UI can be ignored therefore, but I am leaving them in place because you may come across the older interface in your career, and thus it may be useful. This guide will stay available indefinitely - feel free to bookmark for future use. **
 
 We will now explain how to provision a node in the SCSSNebula, fully configured to act as a docker host. We must provision a node using one of the UI's provided by SCSSNebula, using a disk image supplied, and then install docker on this node. Once you have a suitably configured virtual machine, the disk image associated with it can be used as a basis for new virtual machines so that you do not have to repeat this configuration. We conclude this section by explaining how to save the disk image for future use. 
 
@@ -253,19 +215,6 @@ Note also that you will most likely not be able to access these UIs from outside
 
 5. Your virtual machine should now be created. Try to login with `ssh root@a.b.c.d`, with the appropriate ip address obviously. The ip address of your SCSSNebula nodes are listed on the Compute page. If you used the aforementioned image to create your machine, then the password will be `scssnebula`. Login and change this password immediately by running the `passwd` command. If you used some other image, consult the provider. 
 
-### 3.1.2 Create a virtual machine using the older UI ###
-We are now going to create an OpenNebula Debian Linux node that we will use to run Docker containers on. Here are the steps:
-
-1. Open the UI for [staff](http://scssnebularesearch.scss.tcd.ie:4567/ui).
-
-2. Click on the *Storage* menu option, find the `[VM] DebianJessie [Research Ver 1.1]` image, and select the `clone` button. In the revealed pane, give the new image a name and click `clone`.  Note that the cloning of the image will take longer than the GUI suggests, so wait a minute or two before proceeding. Next, select the clone in the list, mark the clone as persistent in the image information pane.
-
-3. Click on *Compute* menu option, and select the `new` button to create a new virtual machine. In the revealed pane, give the machine a name, choose an instance type from the dropdown ( I tend to go for `64bit-2CPU-2048MW-withVNC` but choose as you prefer), select the image you just created in the images list. Select a network (there is probably only one option) and click `Create`. Again, you must wait some time, perhaps as long as 5 minutes before proceeding.
-
-4. Your virtual machine should now be created. Try to login with `ssh root@a.b.c.d`, with the appropriate ip address obviously. The ip address of your SCSSNebula nodes are listed on the Compute page. If you used the aforementioned image to create your machine, the password will be `scssnebula`. Login and change this password immediately by running the `passwd` command. If you used some other image, consult the provider.
-
-5. This is probably a good time to enable [[ssh passwordless access]] access to your node, so that you do not need to keep using the username/password combination to login to your new node. 
- 
 
 ### 3.1.3 Install Docker ###
 We will now install various Docker tools to our new node.
@@ -312,6 +261,36 @@ Server:
 
 Docker is installed. However, we do not have Docker configured to access Docker hub, the remote source of docker containers. Let's test the docker installation by running a simple container, expecting the command to not list the following successful output (if it does, you are all set): 
 
+1. First, create a systemd drop-in directory for the docker service:
+
+    mkdir /etc/systemd/system/docker.service.d
+
+2. Now create a file called `/etc/systemd/system/docker.service.d/http-proxy.conf` that adds the HTTP_PROXY environment variable:
+
+        [Service]
+        Environment="HTTP_PROXY=http://proxy.example.com:80/"
+
+    If you have internal Docker registries that you need to contact without proxying you can specify them via the `NO_PROXY` environment variable:
+
+        Environment="HTTP_PROXY=http://proxy.example.com:80/"
+        Environment="NO_PROXY=localhost,127.0.0.0/8,docker-registry.somecorporation.com"
+
+3. Flush changes:
+
+    $ sudo systemctl daemon-reload
+
+4. Verify that the configuration has been loaded:
+
+    $ sudo systemctl show --property Environment docker
+    Environment=HTTP_PROXY=http://proxy.example.com:80/
+
+5. Restart Docker:
+
+    $ sudo systemctl restart docker
+
+Now try rerunning `docker run hello-world` and if everything works, you will see the output as listed above. 
+
+
 ```
 #!bash
 $ docker run hello-world
@@ -342,36 +321,6 @@ Share images, automate workflows, and more with a free Docker Hub account:
 For more examples and ideas, visit:
  https://docs.docker.com/engine/userguide/
 ```
-If that doesn't work, and if you get a connection error, then docker is not picking up web proxy details. To solve this we need to configure Docker to use the scss web proxy. This is done in different ways depending on the specific OS we are running on. For DebianJessie we perform the following:
-
-1. First, create a systemd drop-in directory for the docker service:
-
-    mkdir /etc/systemd/system/docker.service.d
-
-2. Now create a file called `/etc/systemd/system/docker.service.d/http-proxy.conf` that adds the HTTP_PROXY environment variable:
-
-        [Service]
-        Environment="HTTP_PROXY=http://proxy.example.com:80/"
-
-    If you have internal Docker registries that you need to contact without proxying you can specify them via the `NO_PROXY` environment variable:
-
-        Environment="HTTP_PROXY=http://proxy.example.com:80/"
-        Environment="NO_PROXY=localhost,127.0.0.0/8,docker-registry.somecorporation.com"
-
-3. Flush changes:
-
-    $ sudo systemctl daemon-reload
-
-4. Verify that the configuration has been loaded:
-
-    $ sudo systemctl show --property Environment docker
-    Environment=HTTP_PROXY=http://proxy.example.com:80/
-
-5. Restart Docker:
-
-    $ sudo systemctl restart docker
-
-Now try rerunning `docker run hello-world` and if everything works, you will see the output as listed above. 
 
 If you get that working, Docker is now running on your node. However, if the `docker run` command did not succeed, you most likely have a network configuration problem. It may be worth your while reviewing the network configuration steps described in the section below on creating a _boot2docker_ based host, to see if you can diagnose and correct the problem. 
 
