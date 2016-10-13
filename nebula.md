@@ -1,13 +1,21 @@
-## 3.1 Create a _Debian_ SCSSNebula docker host ##
+## Section 3 - Setting up Docker on SCSSNebula #
+Next we move on to configuring servers to deploy your projects.
+
+This section explains how to configure virtual machines running docker, which we will refer to as _docker hosts_, on the SCSSNebula OpenNebula installation. You do not need to do this to perform development using Haskell and Docker as described above, but if you want to deploy your containers, you will need somewhere to deploy them, and this guide solves this. It will explain how to provision two kinds of nodes into SCSSNebula: a fairly standard _Debian_ based linux virtual machine, and a [boot2docker](https://github.com/boot2docker/boot2docker) virtual machine, this being a lightweight linux distribution specifically designed to run Docker containers. 
+
+Each provisioning method has advantages and disadvantages. The _Debian_ based solution is simple and great for one-off docker host creation, whereas the _boot2docker_ method is more scaleable, making the creation and management of sets of nodes easier, but involving an additional tool called `docker-machine`. We explain each setup in turn. Note that these instructions are for the creation of virtual machines of the SCSS OpenNebula installation, and thus include configuration details specific to that cloud, and omit configuration details not necessary for that cloud. 
+
+
+# Create a _Debian_ SCSSNebula docker host ##
 
 
 We will now explain how to provision a node in the SCSSNebula, fully configured to act as a docker host. We must provision a node using one of the UI's provided by SCSSNebula, using a disk image supplied, and then install docker on this node. Once you have a suitably configured virtual machine, the disk image associated with it can be used as a basis for new virtual machines so that you do not have to repeat this configuration. We conclude this section by explaining how to save the disk image for future use. 
 
-Note that you can achieve this via the updated UI available to SCSSNebula users available [here](https://scssnebulaselfservice.scss.tcd.ie) for staff and students, or via the older interfaces available for [staff](http://scssnebularesearch.scss.tcd.ie:4567/ui) only. Note that you may not have access to all interfaces. The steps for each are different: we include both methods next before proceeding to installation of _Docker_. 
+Note that you can achieve this via the updated UI available to SCSSNebula users available [here](https://scssnebulaselfservice.scss.tcd.ie) for staff and students
 
 Note also that you will most likely not be able to access these UIs from outside the college networks. 
 
-### 3.1.1 Create a virtual machine using the newer UI ###
+### Create a virtual machine using the newer UI ###
 
 1. Open the [user interface](https://scssnebulaselfservice.scss.tcd.ie).
 
@@ -30,23 +38,20 @@ Note also that you will most likely not be able to access these UIs from outside
 5. Your virtual machine should now be created. Try to login with `ssh root@a.b.c.d`, with the appropriate ip address obviously. The ip address of your SCSSNebula nodes are listed on the Compute page. If you used the aforementioned image to create your machine, then the password will be `scssnebula`. Login and change this password immediately by running the `passwd` command. If you used some other image, consult the provider. 
 
 
-### 3.1.3 Install Docker ###
+### Install Docker ###
 We will now install various Docker tools to our new node.
 
 First, lets make sure the node is up to date:
 
-````
-#!bash
-$ apt-get update
-$ apt-get upgrade
-````
+```bash
+apt-get update
+apt-get upgrade
+```
 
 Out node is now up to date. There are various ways to install Docker onto your new Debian node, but this seem to be the most straightforward:
 
-```
-#!bash
-
-$ wget -qO- https://get.docker.com/ | sh
+```bash
+wget -qO- https://get.docker.com/ | sh
 ```
 
 This should kick off a long installation process. If it doesn't, then you will probably need `http_proxy` and `https_proxy`set correctly. Check in your environment (run `env` from the command line), and set them both to `http://www-proxy.scss.tcd.ie:8080` they are not set. Note also that you will need `wget` to run that command, which may require you to perform `sudo apt-get wget` on the command line to install it. 
@@ -105,8 +110,7 @@ Docker is installed. However, we do not have Docker configured to access Docker 
 Now try rerunning `docker run hello-world` and if everything works, you will see the output as listed above. 
 
 
-```
-#!bash
+```bash
 $ docker run hello-world
 Unable to find image 'hello-world:latest' locally
 latest: Pulling from library/hello-world
@@ -138,7 +142,7 @@ For more examples and ideas, visit:
 
 If you get that working, Docker is now running on your node. However, if the `docker run` command did not succeed, you most likely have a network configuration problem. It may be worth your while reviewing the network configuration steps described in the section below on creating a _boot2docker_ based host, to see if you can diagnose and correct the problem. 
 
-### 3.1.3 Final configuration and baking###
+###  Final configuration and baking###
 
 This is probably a good time to enable [[ssh passwordless access]] access to your node, so that you do not need to keep using the username/password combination to login to your new node. 
 
@@ -167,7 +171,7 @@ Our process will be to first create a new boot2docker based virtual machine usin
 
 We can create boot2docker virtual machines using either a UI based process along the lines discussed above, or by using a command line tool called `docker-machine`. Because *boot2docker* must be configured to use a secondary disk for persistent data storage, you *can not* use the old UI, which does not support such configuration, but must instead use the newer UI available to SCSSNebula users [here](http://scssnebulateaching2.scss.tcd.ie:9869/). We discuss the creation process using each method in turn, before turning to persisting configuration specific to the SCSSNebula cloud.
 
-### 3.2.1 Create virtual machine using the newer UI ###
+### Create virtual machine using the newer UI ###
 
 1. Open the [user interface](https://scssnebulaselfservice.scss.tcd.ie).
 
@@ -193,7 +197,7 @@ We can create boot2docker virtual machines using either a UI based process along
 
 5. Your virtual machine should now be running. Try to login with `ssh docker@a.b.c.d`, with the appropriate ip address obviously. The ip address of your SCSSNebula nodes are listed on the Compute page. If you used the aforementioned image to create your machine, the login password the `docker` account will be `tcuser`. 
 
-### 3.2.2 Create virtual machine using docker-machine ###
+### Create virtual machine using docker-machine ###
 `docker-machine` is a client side tool that provides a simple command line interface that supports the creation of Docker virtual machines (known in the jargon as 'provisioning') and the management of groups of Docker machines. It is very easy to use, arguably easier to use that the SCSSnebula UI process described above, but it must be installed before use. 
 
 In the following, we explain how to install `docker-machine`, and then describe how to create a standalone virtual machine using the tool. You can install `docker-machine` on any machine you like, including your laptop, provided that the machine has direct network access the the SCSSNebula cloud. 

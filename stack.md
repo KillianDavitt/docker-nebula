@@ -1,10 +1,12 @@
-# Install The Software #
-Install each component in turn. We will provide references to cross-platform install links as we go, but will assume Mac OS X as the installation platform for the text. Note that you do not need to have installed haskell before you start. We assume only a default OS implementation.
+# Section 1
+Note that you do not need to have installed haskell before you start. We assume only a default OS implementation.
 
 
 # Install Stack
 ## MacOs
 [Homebrew](http://brew.sh) is a package manager for Mac OS X widely used for managing the installation of open source software. You probably already have it. If you don't, [get it](http://brew.sh) as you will need it to install most other packages on Mac OS X. For other operating systems, research an appropriate package manager. Many of the installation links provided below will provide these details. 
+
+
 Details [here](https://docs.haskellstack.org/en/stable/install_and_upgrade/#mac-os-x), but for Mac its as simple as:
 ```bash
 brew install haskell-stack
