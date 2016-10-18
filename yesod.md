@@ -95,7 +95,7 @@ stack --docker-run-args='--net=bridge --publish=3000:3000' exec -- yesod devel
 
 do this to add an alias to your bashrc so that you dont have to type it everytime
 ```bash
-echo "alias docker-yesod-dev=\"stack --docker-run-args='--net=bridge --publish=3000:3000' exec -- yesod devel\" >> ~/.bashrc
+echo "alias docker-yesod-dev=\"stack --docker-run-args='--net=bridge --publish=3000:3000' exec -- yesod devel\"" >> ~/.bashrc
 ```
 
 In future, type 'docker-yesod-dev'
