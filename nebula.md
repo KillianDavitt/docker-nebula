@@ -195,10 +195,13 @@ To install docker-machine, proceed as follows:
     docker-machine version
     ```
 3. Retrieve the shell completion scripts repository from GitHub, and follow the simple instructions at the top of each script to install them. Once installed, you can delete the repository.
+    
     ```bash
     git clone https://github.com/docker/machine/tree/master/contrib/completion/bash
     ```
+    
     Add the following to your `~/.bashrc` file:
+    
     ```bash
     echo "PS1='[\u@\h \W$(__docker_machine_ps1)]\$ '" >> ~/.bashrc
     ```
