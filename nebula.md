@@ -61,23 +61,9 @@ wget -qO- https://get.docker.com/ | sh
 
 Lets test docker is working.
 ```bash
-$ docker version
-Client:
- Version:      1.12.1
- API version:  1.24
- Go version:   go1.6.3
- Git commit:   23cf638
- Built:        Thu Aug 18 05:02:53 2016
- OS/Arch:      linux/amd64
-
-Server:
- Version:      1.12.1
- API version:  1.24
- Go version:   go1.6.3
- Git commit:   23cf638
- Built:        Thu Aug 18 05:02:53 2016
- OS/Arch:      linux/amd64
+docker version
 ```
+You should get some lovely version info.
 
 Docker is installed. However, we do not have Docker configured to access Docker hub, the remote source of docker containers. Let's test the docker installation by running a simple container, expecting the command to not list the following successful output (if it does, you are all set): 
 
@@ -114,34 +100,9 @@ Now try rerunning `docker run hello-world` and if everything works, you will see
 
 
 ```bash
-$ docker run hello-world
-Unable to find image 'hello-world:latest' locally
-latest: Pulling from library/hello-world
-c04b14da8d14: Pull complete 
-Digest: sha256:0256e8a36e2070f7bf2d0b0763dbabdd67798512411de4cdcf9431a1feb60fd9
-Status: Downloaded newer image for hello-world:latest
-
-Hello from Docker!
-This message shows that your installation appears to be working correctly.
-
-To generate this message, Docker took the following steps:
- 1. The Docker client contacted the Docker daemon.
- 2. The Docker daemon pulled the "hello-world" image from the Docker Hub.
- 3. The Docker daemon created a new container from that image which runs the
-    executable that produces the output you are currently reading.
- 4. The Docker daemon streamed that output to the Docker client, which sent it
-    to your terminal.
-
-To try something more ambitious, you can run an Ubuntu container with:
-
-$ docker run -it ubuntu bash
-
-Share images, automate workflows, and more with a free Docker Hub account:
- https://hub.docker.com
-
-For more examples and ideas, visit:
- https://docs.docker.com/engine/userguide/
+docker run hello-world
 ```
+Docker will download the latest image of 'hello-world' for you and run it.
 
 ###  Final configuration and baking###
 
@@ -273,7 +234,7 @@ To install docker-machine, proceed as follows:
     We will need this when we use docker with the OpenNebula plugin.
 
 6. Test your Go installation by adding a file `$GOPATH/src/github.com/[your Github username]/hello/hello.go` (you will need to make the directory structure) with the following contents:
-
+    ```go
         package main
 
         import "fmt"
@@ -281,7 +242,7 @@ To install docker-machine, proceed as follows:
         func main() {
             fmt.Printf("hello, world\n")
         }
-
+    ```
     and execute the following command (don't forget that the environment variables we added above must be active in your shell):
 
         $ go install github.com/[your Github username]/hello
