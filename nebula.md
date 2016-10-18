@@ -82,9 +82,9 @@ Docker is installed. However, we do not have Docker configured to access Docker 
         Environment="NO_PROXY=localhost,127.0.0.0/8,docker-registry.somecorporation.com"
 
 3. Flush changes:
-
-    $ sudo systemctl daemon-reload
-
+    ```bash
+    sudo systemctl daemon-reload
+    ```
 4. Verify that the configuration has been loaded:
 
     ```bash
@@ -93,10 +93,10 @@ Docker is installed. However, we do not have Docker configured to access Docker 
     Environment=HTTP_PROXY=http://www-proxy.tcd.ie:8080/
 
 5. Restart Docker:
-```bash
+    ```bash
      sudo systemctl restart docker
-```
-Now try rerunning `docker run hello-world` and if everything works, you will see the output as listed above. 
+    ```
+Now try rerunning `docker run hello-world` and if everything works, you will see some success messages. 
 
 
 ```bash
@@ -179,22 +179,25 @@ Note that all the following presumes that you have network access on the install
 To install docker-machine, proceed as follows:
 
 1. If necessary install the `curl`:  
-
-        $ apt-get install curl 
-
+        ```bash
+        apt-get install curl 
+        ```
 2. Download Docker-machine and extract it to your PATH:
 
+        ```bash
+         curl -L https://github.com/docker/machine/releases/download/v0.7.0/docker-machine-`uname -s`-` uname -m` > ~/docker-machine
+         
+         # Make it exectuable
+         chmod +x ~/docker-machine
 
-        $ curl -L https://github.com/docker/machine/releases/download/v0.7.0/docker-machine-`uname -s`-` uname -m` >          /usr/local/bin/docker-machine && chmod +x /usr/local/bin/docker-machine
-  
-
-    That command puts docker-machine in `/usr/local/bin`.
+         # Move it to your PATH
+         mv ~/docker-machine /usr/local/bin/docker-machine 
+        ```
 
 3. Check the installation by displaying the Machine version:
-
-        $ docker-machine version
-        docker-machine version 0.7.0, build 61388e9
-
+    ```bash
+    docker-machine version
+    ```
 4. Retrieve the shell completion scripts repository from GitHub, and follow the simple instructions at the top of each script to install them. Once installed, you can delete the repository.
 
         git clone https://github.com/docker/machine/tree/master/contrib/completion/bash
