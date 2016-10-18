@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" href="normalize.css" type="text/css" />
+</head>
+<body>
+<div id="TOC">
+<ul>
+<li><a href="#section-1">Section 1</a></li>
+<li><a href="#install-stack">Install Stack</a><ul>
+<li><a href="#macos">macOS</a></li>
+<li><a href="#linux-ubuntudebian">Linux (Ubuntu/Debian)</a></li>
+</ul></li>
+<li><a href="#install-docker">Install Docker</a></li>
+<li><a href="#install-yesod-command-line-tools-platform-agnostic">Install Yesod Command Line Tools (platform agnostic)</a></li>
+</ul>
+</div>
+<h1 id="section-1">Section 1</h1>
+<p>Note that you do not need to have installed haskell before you start. We assume only a default OS implementation.</p>
+<h1 id="install-stack">Install Stack</h1>
+<h2 id="macos">macOS</h2>
+<p><a href="http://brew.sh">Homebrew</a> is a package manager for macOS widely used for managing the installation of open source software. You probably already have it. If you don’t, <a href="http://brew.sh">get it</a> as you will need it to install most other packages on macOS. For other operating systems, research an appropriate package manager. Many of the installation links provided below will provide these details.</p>
+<p>Details <a href="https://docs.haskellstack.org/en/stable/install_and_upgrade/#mac-os-x">here</a>, but for macOS it’s as simple as:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">brew</span> install haskell-stack</code></pre></div>
+<h2 id="linux-ubuntudebian">Linux (Ubuntu/Debian)</h2>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">sudo</span> apt-get install stack</code></pre></div>
+<h1 id="install-docker">Install Docker</h1>
+<p>Docker install instructions are to be found <a href="https://docs.docker.com/engine/installation/">here</a>. For macOS, visit <a href="https://docs.docker.com/docker-for-mac/">this page</a> and work your way through the full ‘Getting Started’ section. It should take no more than ten minutes and you will learn all you need to know for our purposes.</p>
+<p>To test if docker is working on your machine, run the following on the command line, which if successful will return status information regarding the docker server:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">  <span class="kw">docker</span> info</code></pre></div>
+<p><strong>Note for macOS Sierra Users:</strong> I have noticed that Docker can be a little temperamental. If a command does not execute properly, try again, perhaps restarting Docker. All following commands can be interrupted and restarted, so don’t worry about breaking anything. If a step seems not to be progressing, give it a little time, but if needs be, kill it and rerun. If this does not work, dig into Docker documentation and/or support. To test if Docker is operating correctly, call <code>docker info</code>, which should return immediately with status information.</p>
+<h1 id="install-yesod-command-line-tools-platform-agnostic">Install Yesod Command Line Tools (platform agnostic)</h1>
+<p>The Yesod framework is just a project dependency as far as your haskell development is concerned, so you do not need to explicitly install the framework - it will be installed as needed when you use stack to build your project, as with any other project dependency.</p>
+<p>But Yesod comes with a set of command line tools that do need to be installed to support Yesod development, and this is how (using stack):</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">stack</span> build yesod-bin cabal-install --install-ghc</code></pre></div>
+<p>If you do this within a Stack project, then the project config will be used - you are essentially building the tools in the context of your project. If you run this command outside a stack project, then you global Stack config will be used. Do not worry about this for the moment. Just note that if you ever need to install Yesod command line tools that seem to be missing, this is how, and you run that command at the prompt where the problem was noted. We will include this step in the development workflow by default below, so there should be no need to run this command outside of that workflow.</p>
+<p>Note that this command will take a few minutes on a fresh install - it is downloading and occasionally building haskell code, including dependencies (at time of writing, 104 steps).</p>
+</body>
+</html>

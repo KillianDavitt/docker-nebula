@@ -1,0 +1,289 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" href="normalize.css" type="text/css" />
+</head>
+<body>
+<div id="TOC">
+<ul>
+<li><a href="#section-3---setting-up-docker-on-scssnebula">Section 3 - Setting up Docker on SCSSNebula</a></li>
+<li><a href="#create-a-debian-scssnebula-docker-host">Create a <em>Debian</em> SCSSNebula docker host</a><ul>
+<li><a href="#create-a-virtual-machine-using-the-newer-ui">Create a virtual machine using the newer UI</a></li>
+<li><a href="#install-docker">Install Docker</a></li>
+<li><a href="#final-configuration-and-baking">Final configuration and baking</a></li>
+<li><a href="#create-a-boot2docker-scssnebula-docker-host">3.2 Create a <em>boot2docker</em> SCSSNebula docker host</a><ul>
+<li><a href="#create-virtual-machine-using-the-newer-ui">Create virtual machine using the newer UI</a></li>
+<li><a href="#create-virtual-machine-using-docker-machine">Create virtual machine using docker-machine</a></li>
+<li><a href="#configure-networking-for-your-new-boot2docker-instance---the-automated-way">3.2.4 Configure Networking for your new boot2docker instance - the automated way</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+<h2 id="section-3---setting-up-docker-on-scssnebula">Section 3 - Setting up Docker on SCSSNebula</h2>
+<p>Next we move on to configuring servers to deploy your projects.</p>
+<p>This section explains how to configure virtual machines running docker, which we will refer to as <em>docker hosts</em>, on the SCSSNebula OpenNebula installation. It will explain how to provision two kinds of nodes into SCSSNebula: a fairly standard <em>Debian</em> based linux virtual machine, and a <a href="https://github.com/boot2docker/boot2docker">boot2docker</a> virtual machine, this being a lightweight linux distribution specifically designed to run Docker containers.</p>
+<p>Debian machines are easier to setup, but boot_2_docker machines are much more scaleable and less resource demanding.</p>
+<h1 id="create-a-debian-scssnebula-docker-host">Create a <em>Debian</em> SCSSNebula docker host</h1>
+<p>First, we create a template of an image so that it will be easy for us to reuse the configuration.</p>
+<p>OpenNebula UI is: <a href="https://scssnebulaselfservice.scss.tcd.ie">here</a> for staff and students</p>
+<p>The UI can’t be accessed outside of college.</p>
+<h3 id="create-a-virtual-machine-using-the-newer-ui">Create a virtual machine using the newer UI</h3>
+<ol style="list-style-type: decimal">
+<li><p>Open the <a href="https://scssnebulaselfservice.scss.tcd.ie">user interface</a>.</p></li>
+<li><p>Click on the <em>Images</em> sub-menu option (found in the <em>Virtual Resources</em> menu), select the <code>[VM] DebianJessie [Research Ver 1.1]</code> image, and click the <code>clone</code> button. In the revealed pane, give the new image a name. We will use this image for the creation of our first virtual machine, but we will need to configure some files in it, so lets start by building a virtual machine from this image. The image is large so the clone creation will take some time. Next, select the clone you have created from the <em>Images</em> list, mark the clone as persistent by selecting the <code>make persistent</code> in the revealed panel (select the edit icon and change the value).</p></li>
+<li><p>Next, we must create a Template. Select the <em>Templates</em> sub-menu in the <em>Virtual Resources</em> menu create a new template. The template system is complex but we will perform a minimal configuration.</p>
+<ol style="list-style-type: decimal">
+<li><p>On the storage tab, select your cloned image as Disk 0.</p>
+<p><em>Note that you can add multiple disks to a template. However, the image we have cloned is large enough for normal use and so we will not add a second disk.</em></p></li>
+<li><p>On the Network tab, select the <code>ResearchNet [routed]</code> network.</p></li>
+<li><p>On the Context tab, ensure <code>Add Network Contextualization</code> checkbox is selected.</p></li>
+<li><p>That is sufficient configuration. Create the template.</p></li>
+</ol></li>
+<li><p>Now we have a template, we will create a virtual machine. Select the <em>Virtual Machines</em> sub-menu option under the <em>Virtual Resources</em> menu. Create a new instance and in the dialog box, name it and select the template you just created. Click click <code>Create</code>. Again, because the boot2docker image has been designed to be very small, the virtual machine should be created very quickly, and you should not have to wait for its creation to complete.</p></li>
+<li><p>Your virtual machine should now be created. Try to login with <code>ssh root@a.b.c.d</code>, with the appropriate ip address obviously. The ip address of your SCSSNebula nodes are listed on the Compute page. If you used the aforementioned image to create your machine, then the password will be <code>scssnebula</code>. Login and change this password immediately by running the <code>passwd</code> command. If you used some other image, consult the provider.</p></li>
+</ol>
+<h3 id="install-docker">Install Docker</h3>
+<p>We will now install various Docker tools to our new node.</p>
+<p>First, lets make sure the node is up to date:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">apt-get</span> update
+<span class="kw">apt-get</span> upgrade
+<span class="kw">apt-get</span> install wget</code></pre></div>
+<p>Now, we’ll set the tcd proxy settings</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">echo</span> <span class="st">&quot;export http_proxy=&#39;http://www-proxy.scss.tcd.ie:8080&#39;&quot;</span> <span class="kw">&gt;&gt;</span> ~/.bashrc
+<span class="kw">echo</span> <span class="st">&quot;export https_proxy=&#39;https://www-proxy.scss.tcd.ie:8080&#39;&quot;</span> <span class="kw">&gt;&gt;</span> ~/.bashrc</code></pre></div>
+<p>Now we can install docker…</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">wget</span> -qO- https://get.docker.com/ <span class="kw">|</span> <span class="kw">sh</span></code></pre></div>
+<p>Lets test docker is working.</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">docker</span> version</code></pre></div>
+<p>You should get some lovely version info.</p>
+<p>Docker is installed. However, we do not have Docker configured to access Docker hub, the remote source of docker containers. Let’s test the docker installation by running a simple container, expecting the command to not list the following successful output (if it does, you are all set):</p>
+<ol style="list-style-type: decimal">
+<li><p>First, create a systemd drop-in directory for the docker service:</p>
+<p>mkdir /etc/systemd/system/docker.service.d</p></li>
+<li><p>Now create a file called <code>/etc/systemd/system/docker.service.d/http-proxy.conf</code> that adds the HTTP_PROXY environment variable:</p>
+<pre><code>[Service]
+Environment=&quot;HTTP_PROXY=http://www-proxy.scss.tcd.ie:8080/&quot;</code></pre>
+<p>If you have internal Docker registries that you need to contact without proxying you can specify them via the <code>NO_PROXY</code> environment variable:</p>
+<pre><code>Environment=&quot;HTTP_PROXY=http://www-proxy.scss.tcd.ie:8080/&quot;
+Environment=&quot;NO_PROXY=localhost,127.0.0.0/8,docker-registry.somecorporation.com&quot;</code></pre></li>
+<li><p>Flush changes:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">sudo</span> systemctl daemon-reload</code></pre></div></li>
+<li><p>Verify that the configuration has been loaded:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">sudo</span> systemctl show --property Environment docker</code></pre></div>
+<p>Environment=HTTP_PROXY=http://www-proxy.tcd.ie:8080/</p></li>
+<li><p>Restart Docker:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"> <span class="kw">sudo</span> systemctl restart docker</code></pre></div>
+<p>Now try rerunning <code>docker run hello-world</code> and if everything works, you will see some success messages.</p></li>
+</ol>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">docker</span> run hello-world</code></pre></div>
+<p>Docker will download the latest image of ‘hello-world’ for you and run it.</p>
+<h3 id="final-configuration-and-baking">Final configuration and baking</h3>
+<p>This is probably a good time to enable [[ssh passwordless access]] access to your node, so that you do not need to keep using the username/password combination to login to your new node.</p>
+<p>Your virtual machine is now well configured to act as a docker virtual machine and run docker containers in the SCSSNebula cloud. To avoid having to repeat these steps in the future, it is sensible to now bake the virtual machine image for use as a base image for new virtual machines. To do this, perform the following:</p>
+<ol style="list-style-type: decimal">
+<li><p>Shutdown the virtual machine from the command line prompt as follows:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">poweroff</span></code></pre></div></li>
+<li><p>Delete the virtual machine. Note that in deleting the virtual machine the disk image was associated with, you have not deleted the disk image.</p></li>
+<li><p>Make the disk image that was associated with the now deleted virtual machine <em>non-persistent</em> via the appropriate user interface option (you will have previously made the image persistent).</p></li>
+</ol>
+<p>You can now create new virtual machines based on this saved, configured image by using is as the base image in the UI based virtual machine creation processes described above.</p>
+<p><em>Note however, that for each new docker host you wish to create, you will need to clone your base image, make the clone persistent, and build the new machine using the cloned image. This is so that each docker host can store containers persistently. This is a somewhat cumbersome if you need to create many docker hosts, resulting in a proliferation of disk images, one for each host, and so we next provide a process for creating docker hosts using a single non-volatile image called <code>boot2docker</code></em></p>
+<h2 id="create-a-boot2docker-scssnebula-docker-host">3.2 Create a <em>boot2docker</em> SCSSNebula docker host</h2>
+<p>We are now going to create and configure an OpenNebula <a href="https://github.com/boot2docker/boot2docker">boot2docker</a> virtual machine that we will use to run docker containers in the SCSSNebula cloud.</p>
+<p><em>boot2docker</em> is a very lightweight OS image designed to act as a docker host. It runs almost entriely in ram. Note that this means that we <em>can not</em> modify and save the boot2docker image as we did with our Debian based process above - most changes we make will be lost on reboot. To configure a boot2docker virtual machine <em>persistently</em> to work correctly in the SCSSNebula, we must restrict out modifications to particular configuration and script files located in file system directories stored and mounted from the secondary disk.</p>
+<p>Our process will be to first create a new boot2docker based virtual machine using a UI, and then login and add configuration details to that machine. Note that this means that each boot2docker machine we create must be individually configured. This is a significant manual overhead, and so after we have explained the necessary configuration, we will discuss how to automate this configuration step so that we can more easily create and configure sets of virtual machines.</p>
+<p>We can create boot2docker virtual machines using either a UI based process along the lines discussed above, or by using a command line tool called <code>docker-machine</code>. Because <em>boot2docker</em> must be configured to use a secondary disk for persistent data storage, you <em>can not</em> use the old UI, which does not support such configuration, but must instead use the newer UI available to SCSSNebula users <a href="http://scssnebulateaching2.scss.tcd.ie:9869/">here</a>. We discuss the creation process using each method in turn, before turning to persisting configuration specific to the SCSSNebula cloud.</p>
+<h3 id="create-virtual-machine-using-the-newer-ui">Create virtual machine using the newer UI</h3>
+<ol style="list-style-type: decimal">
+<li><p>Open the <a href="https://scssnebulaselfservice.scss.tcd.ie">user interface</a>.</p></li>
+<li><p>Click on the <em>Images</em> sub-menu option (found in the <em>Virtual Resources</em> menu), and look for an <code>[VM] boot2docker</code> image.If there is no such image, you will need to install the <code>boot2docker</code> image into the SCSSNebula as follows:</p>
+<ol style="list-style-type: decimal">
+<li><p>Open the Marketplace and search for <code>boot2docker</code> and select it. Check the information, which should describe an image built to support <em>OpenNebula Contextualization</em>. Import this image, giving it a name such as <code>[VM] boot2docker</code>.</p></li>
+<li><p>Click the <em>Image</em> sub-menu again and find your <code>[VM] boot2docker</code> image.</p></li>
+</ol></li>
+<li><p>Next, we must create a Template. Select the <em>Templates</em> sub-menu in the <em>Virtual Resources</em> menu create a new template. The template system is complex but we will perform a minimal configuration.</p>
+<ol style="list-style-type: decimal">
+<li>On the storage tab, select your boot2docker as Disk 0.</li>
+</ol>
+<p>Add a second volatile disk at this point, of a reasonable size to store containers. The boot2docker image is configured to expect a volatile second disk for storing containers and that will be mounted into the file system directory structure.</p>
+<ol start="2" style="list-style-type: decimal">
+<li><p>On the Network tab, select the <code>ResearchNet [routed]</code> network.</p></li>
+<li><p>On the Context tab, ensure <code>Add Network Contextualization</code> checkbox is selected.</p></li>
+<li><p>That is sufficient configuration. Create the template.</p></li>
+</ol></li>
+<li><p>Now we have a template, we will create a virtual machine. Select the <em>Virtual Machines</em> sub-menu option under the <em>Virtual Resources</em> menu. Create a new instance and in the dialog box, name it and select the template you just created. Click click <code>Create</code>. Again, because the boot2docker image has been designed to be very small, the virtual machine should be created very quickly, and you should not have to wait long for its creation to complete.</p></li>
+<li><p>Your virtual machine should now be running. Try to login with <code>ssh docker@a.b.c.d</code>, with the appropriate ip address obviously. The ip address of your SCSSNebula nodes are listed on the Compute page. If you used the aforementioned image to create your machine, the login password the <code>docker</code> account will be <code>tcuser</code>.</p></li>
+</ol>
+<h3 id="create-virtual-machine-using-docker-machine">Create virtual machine using docker-machine</h3>
+<p><code>docker-machine</code> is a client side tool that provides a simple command line interface that supports the creation of Docker virtual machines (known in the jargon as ‘provisioning’) and the management of groups of Docker machines. It is very easy to use, arguably easier to use that the SCSSnebula UI process described above, but it must be installed before use.</p>
+<p>In the following, we explain how to install <code>docker-machine</code>, and then describe how to create a standalone virtual machine using the tool. You can install <code>docker-machine</code> on any machine you like, including your laptop, provided that the machine has direct network access the the SCSSNebula cloud.</p>
+<p>You can test access to the SCSSNebula system by performing the following commands on the install machine:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">apt-get</span> install curl   <span class="co"># if necessary</span>
+$ <span class="kw">curl</span> http://scssnebulamgr.scss.tcd.ie:2633/RPC2
+<span class="kw">&lt;HTML&gt;&lt;</span>HEAD<span class="kw">&gt;&lt;</span>TITLE<span class="kw">&gt;</span>Error <span class="kw">405&lt;</span>/TITLE<span class="kw">&gt;&lt;</span>/HEAD<span class="kw">&gt;&lt;</span>BODY<span class="kw">&gt;&lt;</span>H<span class="kw">1&gt;</span>Error <span class="kw">405&lt;</span>/H<span class="kw">1&gt;&lt;</span>P<span class="kw">&gt;</span>POST is the only HTTP me...</code></pre></div>
+<p>If you see that output, then you are all set to proceed.</p>
+<p><code>docker-machine</code> supports the creation of Docker machines on a number of cloud platforms. There is an OpenNebula plugin that makes it possible to use <code>docker-machine</code> with OpenNebula clouds, such as SCSSNebula. We will install both <code>docker-machine</code> and the plugin, assuming our target machine is an SCSSNebula node based on Debian. Consult <a href="https://docs.docker.com/machine/install-machine/">documentation</a> for details on how to install on other platforms.</p>
+<h4 id="install-docker-machine">Install Docker-machine</h4>
+<p>Note that all the following presumes that you have network access on the install machine. Note also that if you installed Docker on a Mac or a Windows machine using the recommended methods, then you will already have docker-machine installed: proceed to the section on installation of the <em>docker-machine-opennebula plugin</em>.For the remainder of this section we will presume that the target machine is a standard DebianJessie instance in the SCSSNebula cloud, built using the process described above.</p>
+<p>To install docker-machine, proceed as follows:</p>
+<ol style="list-style-type: decimal">
+<li><p>Download Docker-machine and extract it to your PATH:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"> <span class="kw">curl</span> -L https://github.com/docker/machine/releases/download/v0.7.0/docker-machine-<span class="kw">`uname</span> -s<span class="kw">`</span>-<span class="kw">`</span> <span class="kw">uname</span> -m<span class="kw">`</span> <span class="kw">&gt;</span> ~/docker-machine
+
+ <span class="co"># Make it exectuable </span>
+ <span class="kw">chmod</span> +x ~/docker-machine
+
+ <span class="co"># Move it to your PATH</span>
+ <span class="kw">mv</span> ~/docker-machine /usr/local/bin/docker-machine </code></pre></div></li>
+<li><p>Check the installation by displaying the Machine version:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">docker-machine</span> version</code></pre></div></li>
+<li><p>Retrieve the shell completion scripts repository from GitHub, and follow the simple instructions at the top of each script to install them. Once installed, you can delete the repository.</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">git</span> clone https://github.com/docker/machine/tree/master/contrib/completion/bash</code></pre></div>
+<p>Add the following to your <code>~/.bashrc</code> file:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">echo</span> <span class="st">&quot;PS1=&#39;[\u@\h \W</span><span class="ot">$(</span><span class="kw">__docker_machine_ps1</span><span class="ot">)</span><span class="st">]</span><span class="dt">\$</span><span class="st"> &#39;&quot;</span> <span class="kw">&gt;&gt;</span> ~/.bashrc</code></pre></div></li>
+</ol>
+<h4 id="install-the-docker-machine-opennebula-plugin">Install the docker-machine-opennebula plugin</h4>
+<ol style="list-style-type: decimal">
+<li><p>To install the docker-machine-opennebula plugin, you are first going to need to install the programming language <a href="http://www.golang.org/">Go</a>, and <a href="https://github.com/tools/godep">GoDep</a>. Do that as follows:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">wget</span> https://storage.googleapis.com/golang/go1.6.3.linux-amd64.tar.gz
+ <span class="kw">tar</span> -C /usr/local -xzf go1.6.3.linux-amd64.tar.gz</code></pre></div></li>
+<li><p>Add the following to <code>/etc/profile</code> so that go is available to all users.</p>
+<p>export PATH=$PATH:/usr/local/go/bin</p></li>
+<li><p>Next, setup a workspace for Go.</p>
+<pre><code>mkdir ~/gowork</code></pre></li>
+<li><p>Add the following to your <code>~/.bashrc</code>:</p>
+<pre><code>export GOPATH=$HOME/gowork</code></pre></li>
+<li><p>Also add the following to your PATH (via, for example, <code>~/.bashrc</code>):</p>
+<pre><code>export PATH=$PATH:$GOPATH/bin</code></pre>
+<p>We will need this when we use docker with the OpenNebula plugin.</p></li>
+<li><p>Test your Go installation by adding a file <code>$GOPATH/src/github.com/[your Github username]/hello/hello.go</code> (you will need to make the directory structure) with the following contents:</p>
+<div class="sourceCode"><pre class="sourceCode go"><code class="sourceCode go">    <span class="kw">package</span> main
+
+    <span class="kw">import</span> <span class="st">&quot;fmt&quot;</span>
+
+    <span class="kw">func</span> main() {
+        fmt.Printf(<span class="st">&quot;hello, world</span><span class="ch">\n</span><span class="st">&quot;</span>)
+    }</code></pre></div>
+<p>and execute the following command (don’t forget that the environment variables we added above must be active in your shell):</p>
+<pre><code>$ go install github.com/[your Github username]/hello
+$ $GOPATH/bin/hello
+hello, world</code></pre>
+<p>If you see <code>hello, world</code> as above, then you have Go installed.</p></li>
+<li><p>Execute the following command to install GoDep:</p>
+<pre><code>$ go get github.com/tools/godep</code></pre></li>
+<li><p>Install <code>bzr</code>, which is a tool that <em>go</em> sometimes uses:</p>
+<pre><code>$ apt-get install bzr </code></pre></li>
+<li><p>Next install the <code>docker-machine-plugin</code>:</p>
+<pre><code>$ go get github.com/OpenNebula/docker-machine-opennebula
+$ cd $GOPATH/src/github.com/OpenNebula/docker-machine-opennebula
+$ make build</code></pre>
+<p>After the build is complete, <code>bin/docker-machine-driver-opennebula</code> binary will be created and it must be included in $PATH variable. We will put it in the standard Go path by executing:</p>
+<pre><code>$ make install</code></pre></li>
+<li><p>Configure the opennebula plugin.</p>
+<p>We must now set two environment variables needed by the opennebula plugin. At the command line, execute the following, where <code>username:password</code> is replaced with your SCSSNebula username and password. Be sure to adjust the file permissions so that this file is only readable by you:</p>
+<pre><code>$ mkdir ~/.one
+$ echo &quot;username:password&quot; &gt; ~/.one/one_auth    # or vi if you prefer
+$ chmod 400 ~/.one/one_auth                     # only owner can read </code></pre>
+<p>Add the following to your shell configuration (and don’t forget to reload):</p>
+<pre><code>export ONE_XMLRPC=http://scssnebulamgr.scss.tcd.ie:2633/RPC2
+export ONE_AUTH=~/.one/one_auth</code></pre></li>
+</ol>
+<p>Your <code>docker-machine</code> tool is now configured. We will use it in the next section to create a Docker host.</p>
+<h4 id="provision-docker-hosts-with-docker-machine">Provision docker hosts with docker-machine</h4>
+<p>We are now ready to create Docker hosts within the SCSSNebula cloud. Using <code>docker-machine</code> is very easy:</p>
+<pre><code>$ docker-machine create --driver opennebula --opennebula-network-id $NETWORK_ID --opennebula-image-id $BOOT2DOCKER_IMG_ID --opennebula-b2d-size $DATA_SIZE_MB nodename</code></pre>
+<p>where <code>$BOOT2DOCKER_IMG_ID</code> is the numerical ID of the imported boot2docker image, <code>$DATA_SIZE_MB</code> is the size of the volatile disk in MB, and <code>$NETWORD_ID</code> is the ID of the research network for SCSSNebula.</p>
+<p>For example:</p>
+<pre><code>$ docker-machine create --driver opennebula --opennebula-network-id 6 --opennebula-image-id 1155 --opennebula-b2d-size 1000 test
+Running pre-create checks...
+Creating machine...
+(test) Creating SSH key...
+(test) Starting  VM...
+(test) Waiting for SSH...
+Waiting for machine to be running, this may take a few minutes...
+Detecting operating system of created instance...
+Waiting for SSH to be available...
+Detecting the provisioner...
+Provisioning with boot2docker...
+Copying certs to the local machine directory...
+Copying certs to the remote machine...
+Setting Docker configuration on the remote daemon...
+Checking connection to Docker...
+Docker is up and running!
+To see how to connect your Docker Client to the Docker Engine running on this virtual machine, run: docker-machine env test
+$
+$ docker-machine ls
+NAME     ACTIVE   DRIVER       STATE     URL                     SWARM   DOCKER    ERRORS
+test     -        opennebula   Running   tcp://10.63.0.28:2376           v1.10.2   </code></pre>
+<p>If you have created a template previously via the new open nebula interface, then you can create a docker machine as follows (replacing <code>$TEMPLATE_ID</code> with the appropriate template ID in the UI):</p>
+<pre><code>$ docker-machine create --driver opennebula --opennebula-template-id $TEMPLATE_ID nodename</code></pre>
+<p>Once your node is created, you can login to the node via ssh, or more conveniently use <code>docker-machine</code>:</p>
+<pre><code>$ docker-machine ssh test
+                        ##         .
+                  ## ## ##        ==
+               ## ## ## ## ##    ===
+           /&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;\___/ ===
+      ~~~ {~~ ~~~~ ~~~ ~~~~ ~~~ ~ /  ===- ~~~
+           \______ o           __/
+             \    \         __/
+              \____\_______/
+ _                 _   ____     _            _
+| |__   ___   ___ | |_|___ \ __| | ___   ___| | _____ _ __
+| &#39;_ \ / _ \ / _ \| __| __) / _` |/ _ \ / __| |/ / _ \ &#39;__|
+| |_) | (_) | (_) | |_ / __/ (_| | (_) | (__|   &lt;  __/ |
+|_.__/ \___/ \___/ \__|_____\__,_|\___/ \___|_|\_\___|_|
+Boot2Docker version 1.10.2, build master : 611be10 - Tue Feb 23 00:06:40 UTC 2016
+Docker version 1.10.2, build c3959b1
+docker@testlast:~$ </code></pre>
+<h3 id="configure-networking-for-your-new-boot2docker-instance---the-automated-way">3.2.4 Configure Networking for your new boot2docker instance - the automated way</h3>
+<p>The disadvantage of the <code>docker-machine</code> process is that each docker host is created with a non-persistent boot2docker image and thus starts execution misconfigured for use on the SCSSNebula cloud. There are in fact advanced methods that support the building or fully configured bespoke boot2docker images, but these are beyond the scope of this guide. We have so far described a manual process for logging in to a new boot2docker host, and configuring some persistent files that will ensure that the host will be correctly configured on reboot. However, this is a tedious process, and we would prefer to avoid a manual configuration of each host we create. The following script can be executed from the master node where you run <code>docker-machine</code> immediately after creating the new docker host and will perform all the necessary configuration for you. It creates a set of files in persistent locations in the docker host’s file system that are always executed on boot, and that perform the necessary configuration after the base boot2docker image has started.</p>
+<p><a href="/scripts/docker-config.sh">Here</a> is the script. Save it to a file named <code>docker-configure</code> and put in your path.</p>
+<p>The node creation and configuration process thus is performed as follows:</p>
+<pre><code>docker-machine create --driver opennebula --opennebula-network-id 6 --opennebula-image-id 1155 --opennebula-b2d-size 1000 test   # for example
+    ...
+./docker-configure test</code></pre>
+<p>And so we end up finally with a node creation process that is relatively simple.</p>
+</body>
+</html>
