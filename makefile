@@ -1,8 +1,10 @@
+all: html/index.html html/intro.html html/stack.html html/yesod.html html/nebula.html html/deploy.html html/docker_hosts.html html/swarm.html
+
 html/index.html: index.md 
 	pandoc -s -S -o $@ -c normalize.css $^
 
 html/intro.html: intro.md
-	pandoc -s -S --toc -o $@ -c normalize.css $^
+	pandoc -s -S  -o $@ -c normalize.css $^
 
 html/stack.html: stack.md
 	pandoc -s -S --toc -o $@ -c normalize.css $^

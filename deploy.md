@@ -222,7 +222,7 @@ To install a registry server, choose a docker host to be your registry. Be sure 
         Digest: sha256:a18ed77532f6d6781500db650194e0f9396ba5f05f8b50d4046b294ae5f83aa4 
         Status: Image is up to date for a.b.c.d/hello-world:latest
 
-    We can get docker to run container from our registry as follows (replacing `a.b.c.d` as usual):
+    We  can get docker to run container from our registry as follows (replacing `a.b.c.d` as usual):
 
         $ docker run a.b.c.d/hello-world
         Unable to find image 'a.b.c.d/hello-world:latest' locally
