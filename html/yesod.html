@@ -1,0 +1,112 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" href="normalize.css" type="text/css" />
+</head>
+<body>
+<div id="TOC">
+<ul>
+<li><a href="#section-2---yesod">Section 2 - Yesod</a><ul>
+<li><a href="#create-an-initial-yesod-project">Create an initial Yesod project</a></li>
+<li><a href="#enable-docker-as-the-build-and-execution-platform">Enable Docker as the build and execution platform</a></li>
+<li><a href="#compile-your-project">Compile your project</a></li>
+<li><a href="#test-your-project">Test your Project</a></li>
+<li><a href="#execute-your-project-and-use">2.5 Execute your project and use</a></li>
+<li><a href="#develop-your-project">Develop your Project</a></li>
+</ul></li>
+</ul>
+</div>
+<h1 id="section-2---yesod">Section 2 - Yesod</h1>
+<p>So now we have the tools installed, we come to the workflow for creating and configuring a Yesod Haskell project, compiling and executing it and interacting with its web pages, and performing software development.</p>
+<h2 id="create-an-initial-yesod-project">Create an initial Yesod project</h2>
+<p>Stack is your friend:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">stack</span> new my-project yesod-sqlite <span class="kw">&amp;&amp;</span> <span class="kw">cd</span> my-project</code></pre></div>
+<p>This command uses stack to create a skeleton project called <code>my-project</code> in a subdirectory of the same name. Obviously, you can call the project whatever you like. That project is configured to use Yesod with an SQLite database backend by declaring <code>yesod-sqlite</code> as the <em>template</em> to use. Stack uses a template system with a repository of open source templates that let you to create all kinds of projects with all kinds of configurations. <code>yseod-sqlite</code> is an example, and its generally a good starting point, supporting a baseline Yesod web application with sqlite database support. Consult the <a href="https://github.com/commercialhaskell/stack-templates">Stack template repository</a> or run <code>stack templates</code> for more details of alternative templates, or write your own.</p>
+<p>Of course, you don’t necessarily want to create a Yesod based project and the stack template system can be used to create all kinds of project types. For example, if you wanted to build a REST based web service, then <a href="http://haskell-servant.readthedocs.io/en/stable/">Servant</a> is a good choice:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">stack</span> new my-project servant <span class="kw">&amp;&amp;</span> <span class="kw">cd</span> my-project</code></pre></div>
+<h2 id="enable-docker-as-the-build-and-execution-platform">Enable Docker as the build and execution platform</h2>
+<p>The good news is that Stack has Docker support out-of-the-box, and it is a relatively simple fix to enable it for your project. Open stack.yaml and add the following configuration to the file.</p>
+<div class="sourceCode"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span class="fu">docker:</span>
+   <span class="fu">enable:</span> true</code></pre></div>
+<p>There are various guides online that you may come accross that detail an alternative process based on the creation of a file called <code>DockerFile</code> to manage your docker instance build process. You don’t need to do this any more, because Stack takes care of everything. Details on Stack/Docker integration are available <a href="https://docs.haskellstack.org/en/stable/docker_integration/">here</a>.</p>
+<p><strong>Windows Users:</strong> Note that Stack/Docker integration presently does not work for Windows - if that’s you then for the moment at least you will have to manage Docker instance configuration and execution via the <code>Dockerfile</code> method. <a href="https://ilikewhenit.works/blog/1">This blog</a> will help. You will end up doing more manual configuration and running commands like <code>sudo docker build -t yourname/yesod ./</code> to build your software instead of simply running stack to compile and execute, but the development process is broadly similar once you have setup.</p>
+<h2 id="compile-your-project">Compile your project</h2>
+<p>Assuming that Stack/Docker integration is supported:</p>
+<p>Now lets be sure the Yesod command line tools are built:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">stack</span> build yesod-bin cabal-install --install-ghc</code></pre></div>
+<p>Next run <code>stack setup</code>. In you forget to do this, and carry on to try to build your project, Stack will stop and remind you.</p>
+<p>We are now ready to build our project for the first time:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">stack</span> build</code></pre></div>
+<p>The first build will take quite some time - perhaps 20 minutes or so. Go take a break. Appreciate that a tool stack performing these task automatically means a developer not having to do so, taking even longer. Stack will use precompiled libraries if they exist on your machine, downloading and building them if the particular library version required is not already cached.The stack build system is very robust, so the chances of this process failing before it reaches…ahem…your own code is very low - do not entertain the need to monitor the build.</p>
+<h2 id="test-your-project">Test your Project</h2>
+<p>You are obviously going to run the test suite yes? :)</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">stack</span> test</code></pre></div>
+<h2 id="execute-your-project-and-use">2.5 Execute your project and use</h2>
+<p>Use the following command line to execute your Yesod Project.</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">stack</span> --docker-run-args=<span class="st">&#39;--net=bridge --publish=3000:3000&#39;</span> exec -- yesod devel</code></pre></div>
+<p>There is a little bit going on here.</p>
+<p>First, the basic call is to <code>stack exec</code> passing <code>yesod devel</code> as the task to be executed. This launches your web app using the developer web server from the Yesod Command Line Toolset. You do not generally run your web app directly when developing. If you had built an ordinary Haskell application, you would run <code>stack exec yourProjectName</code> instead, as described in the standard Stack documentation.</p>
+<p>The argument <code>--docker-run-args='--net=bridge --publish=3000:3000'</code> is necessary to ensure that the launched web app is reachable from your host operating system (ie. your desktop browser). Recall that your web app is now executing in a VM lite, and so we need to make that accessible. If your Yesod application has a network endpoint, then you will need an equivalent argument passed to Docker to expose that end point. Without such an argument, your application will execute, presuming it compiles, but will not be reachable from your desktop or any other machine. Note that Docker documentation suggests that this is not necessary, specifically <em>“stack containers use the host’s network stack within the container by default, meaning a process running in the container can connect to services running on the host, and a server process run within the container can be accessed from the host without needing to explicitly publish its port,”</em> but this appears not to be the case for <code>yesod devel</code> applications.</p>
+<div class="figure">
+<img src="http://g.gravizo.com/g?%20@startuml;%20node%20%22Desktop%22%20%7B;%20%5BBrowser%5D%20-%20Port;%20node%20%22Docker%22%20%7B;%20Port%20-%20%5BYesod%20devel%5D;%20%5BYesod%20devel%5D%20-%20%5BWeb%20Application%5D;%20%7D%20;%20%7D;%20@enduml;" alt="Alt Text" />
+<p class="caption">Alt Text</p>
+</div>
+<p>We can now use our running application. Open a web browser and point it to <code>http://localhost:3000</code> which is the default link that <code>yesod devel</code> exposes your application on.</p>
+<p>You should now see a Default site home page with some test functionality. If you do, you are essentially done. If you wish, you can shutdown the web application by typing <code>quit</code> into the command line.</p>
+<p>When you launch your web application for the first time, you may notice a message in the execution trace as follows:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">Warning</span>: The package list for <span class="st">&#39;hackage.haskell.org&#39;</span> does not exist. Run <span class="st">&#39;cabal update&#39;</span> to download it.</code></pre></div>
+<p>You can resolve this by executing the following:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">stack</span> exec -- cabal update</code></pre></div>
+<p>This is another “will take some time” command. However, I have noticed it fail with an “out of memory” error sometimes so you will need to keep an eye on it. If it fails, just rerun till it completes. You could resolve this by adjusting the parameters of the default virtual machine, but its probably not worth it.</p>
+<h2 id="develop-your-project">Develop your Project</h2>
+<p>With the previous steps completed successfully, you can now develop without further consideration for the toolchain setup. As is normal with Yesod development, if you change project files, <code>yesod devel</code> should notice these changes and prompt a recompile and relaunch of your web application.</p>
+<p>If you close down your executing web application, to restart it you will need to use the same launch command as before:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">stack</span> --docker-run-args=<span class="st">&#39;--net=bridge --publish=3000:3000&#39;</span> exec -- yesod devel</code></pre></div>
+<p>do this to add an alias to your bashrc so that you dont have to type it everytime</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">echo</span> <span class="st">&quot;alias docker-yesod-dev=</span><span class="dt">\&quot;</span><span class="st">stack --docker-run-args=&#39;--net=bridge --publish=3000:3000&#39; exec -- yesod devel</span><span class="dt">\&quot;</span><span class="st">&quot;</span> <span class="kw">&gt;&gt;</span> ~/.bashrc</code></pre></div>
+<p>In future, type ‘docker-yesod-dev’</p>
+<p>If you modify code while <code>yesod devel</code> is not running, and then start <code>yesod devel</code>, it will notice that the compiled application is out of date and recompile before launching. Most Yesod developers simply leave <code>yesod devel</code> running, allowing it to rebuild and relaunch their web application as they work.</p>
+</body>
+</html>
