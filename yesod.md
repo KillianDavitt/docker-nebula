@@ -4,10 +4,8 @@ So now we have the tools installed, we come to the workflow for creating and con
 ## Create an initial Yesod project ##
 Stack is your friend:
 
-```
-#!bash
-
-$ stack new my-project yesod-sqlite && cd my-project
+```bash
+stack new my-project yesod-sqlite && cd my-project
 ```
 
 This command uses stack to create a skeleton project called `my-project` in a subdirectory of the same name. Obviously, you can call the project whatever you like. That project is configured to use Yesod with an SQLite database backend by declaring `yesod-sqlite` as the *template* to use. Stack uses a template system with a repository of open source templates that let you to create all kinds of projects with all kinds of configurations. `yseod-sqlite` is an example, and its generally a good starting point, supporting a baseline Yesod web application with sqlite database support. Consult the [Stack template repository](https://github.com/commercialhaskell/stack-templates) or run `stack templates` for more details of alternative templates, or write your own. 
