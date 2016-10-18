@@ -93,12 +93,13 @@ If you close down your executing web application, to restart it you will need to
 stack --docker-run-args='--net=bridge --publish=3000:3000' exec -- yesod devel
 ```
 
-It is probably worth creating an alias for this for future use, adding something like the following to your shells configuration file (such as `~/.bashrc`):
-
+do this to add an alias to your bashrc so that you dont have to type it everytime
 ```bash
-alias docker-yesod-dev="stack --docker-run-args='--net=bridge --publish=3000:3000' exec -- yesod devel"
+echo "alias docker-yesod-dev=\"stack --docker-run-args='--net=bridge --publish=3000:3000' exec -- yesod devel\" >> ~/.bashrc
 ```
-whereupon you can simply call `docker-yesod-dev` from the command line to launch your project in development mode.Put this alias in your shell configuration (for example, if you use base, add it to `~/.bashrc`.
+
+In future, type 'docker-yesod-dev'
+
 
 If you modify code while `yesod devel` is not running, and then start `yesod devel`, it will notice that the compiled application is out of date and recompile before launching. Most Yesod developers simply leave `yesod devel` running, allowing it to rebuild and relaunch their web application as they work.
 
