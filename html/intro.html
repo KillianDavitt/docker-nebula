@@ -1,0 +1,20 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="normalize.css" type="text/css" />
+</head>
+<body>
+<p>This page described how to setup and configure a development workflow for building <a href="http://yesodweb.com">Yesod</a> based applications (but also any other haskell development) using the <a href="http://haskellstack.org">Stack</a> build system, with all compilation and execution running on a <a href="http://docker.com">Docker</a> instance that isolates the compilation/execution of your system from the peculiarities of your host operating system dependencies. Let’s first briefly explain what each component is and what each does for us. If you don’t want to use each when I’m done, I’ve not done my job.</p>
+<ul>
+<li><p><a href="http://haskellstack.org">Stack</a> is a build system for haskell. It is cross platform, so providing a single and simple elegant method for haskell development on any OS. It takes care of installing necessary haskell backends for you, installing all packages your project needs dynamically (say goodbye to dependency hell), it builds, tests and benchmarks your project.Think of it as a replacement to cabal and more. Use it for all your Haskell work.</p></li>
+<li><p><a href="http://docker.com">Docker</a> is a software containerisation platform, which makes it possible to wrap your software and development tools with one of a range of flavours of lightweight VMs encompassing operating system and toolset environments, irrespective of what host OS you use. What this gives you is consistency and independence, allowing you to pick stable development environments to host your toolsets. What sounds like an unnecessary layer in fact greatly simplifies software development. Check out this <a href="http://www.ybrikman.com/writing/2015/05/19/docker-osx-dev/">blog post</a> for more details. We will use Docker to host our Haskell build and execute toolchain, so that irrespective of what host OS we are working from, our development work will in some sense be performed on the chosen Docker instance.</p></li>
+<li><p><a href="http://yesodweb.com">Yesod</a> is a Haskell web framework for development of type-safe, RESTful web applications. There are other frameworks for building web applications, but Yesod is substantial, mature, and well documented (there is a good book by the key project author). A good post considering the question why you should use it is to be found <a href="http://www.yesodweb.com/page/about">here</a>.</p></li>
+</ul>
+<p>In summary, we will create and manage Yesod projects using Stack, and compile them and run them on a containerised virtual machine light that replicates our deployment environment and simplifies deployment greatly. Getting all this to work can be a little tricky however. So what follows is a step by step repeatable workflow, beginning with how to install the software and following with the detail of flag, settings and procedures to follow to make this toolchain work well together.</p>
+</body>
+</html>
