@@ -101,13 +101,15 @@ Docker is installed. However, we do not have Docker configured to access Docker 
 
 4. Verify that the configuration has been loaded:
 
-    $ sudo systemctl show --property Environment docker
+    ```bash
+    sudo systemctl show --property Environment docker
+    ```
     Environment=HTTP_PROXY=http://www-proxy.tcd.ie:8080/
 
 5. Restart Docker:
-
-    $ sudo systemctl restart docker
-
+```bash
+     sudo systemctl restart docker
+```
 Now try rerunning `docker run hello-world` and if everything works, you will see the output as listed above. 
 
 
