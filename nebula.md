@@ -86,11 +86,11 @@ Docker is installed. However, we do not have Docker configured to access Docker 
 2. Now create a file called `/etc/systemd/system/docker.service.d/http-proxy.conf` that adds the HTTP_PROXY environment variable:
 
         [Service]
-        Environment="HTTP_PROXY=http://proxy.example.com:80/"
+        Environment="HTTP_PROXY=http://www-proxy.scss.tcd.ie:8080/"
 
     If you have internal Docker registries that you need to contact without proxying you can specify them via the `NO_PROXY` environment variable:
 
-        Environment="HTTP_PROXY=http://proxy.example.com:80/"
+        Environment="HTTP_PROXY=http://www-proxy.scss.tcd.ie:8080/"
         Environment="NO_PROXY=localhost,127.0.0.0/8,docker-registry.somecorporation.com"
 
 3. Flush changes:
@@ -100,7 +100,7 @@ Docker is installed. However, we do not have Docker configured to access Docker 
 4. Verify that the configuration has been loaded:
 
     $ sudo systemctl show --property Environment docker
-    Environment=HTTP_PROXY=http://proxy.example.com:80/
+    Environment=HTTP_PROXY=http://www-proxy.tcd.ie:8080/
 
 5. Restart Docker:
 
