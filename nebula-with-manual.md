@@ -348,6 +348,151 @@ Docker version 1.10.2, build c3959b1
 docker@testlast:~$ 
 ````
 
+### 3.2.3 Configure Networking for your new boot2docker instance - the manual way###
+
+When we created a Debian based virtual machine, the disk image used was already configured to operate correctly in the SCSSNebula cloud, and so the procedure was short. However, the default boot2docker image is not so configured, and so we need to configure the networking for this default boot2docker virtual machine. 
+
+Recall that the boot2docker image is a non-persisting OS image that does not maintain changes we might make in general in the OS file system after reboot, and so cannot be used as the basis of a pre-configured base image as we did with the _Debian_ based process above. As a consequence, we must configure each boot2docker machine that we create _individually_ following boot, in order to persist the necessary changes in the secondary storage disk.  
+
+We will first explain how to configure an individual boot2docker virtual machine, and subsequently provide a script that can be executed from a remote machine with `ssh` access to the virtual machine that will perform the described configuration. This will provide us overall with a very streamlines command line process for creating and configuring Docker hosts.
+
+_Note that every command we specify below should be entered into the appropriate named file to ensure it will be run on boot. You can also try the commands live at the prompt to ensure that the resulting configuration operates correctly._
+ On reboot, the command line configuration will be lost, but rebuilt on reboot from the persistent changes you made in each step below._
+
+Begin by logging in to your boot2docker virtual machine. Type the following to confirm that the network needs configuration - you should see an error when you enter the following command.
+
+    $ docker run hello-world
+
+Assuming that command caused an error, we proceed as follows:
+
+1. Ensure that the host is forwarding IP packets:
+
+        $ sysctl net.ipv4.conf.all.forwarding
+        net.ipv4.conf.all.forwarding = 1
+
+    If the returned value is '0', then add the following command to `/var/lib/boot2docker/bootsync.sh`:
+
+        $ sysctl net.ipv4.conf.all.forwarding=1
+
+    If the command did not return the value '0', skip to step 2.
+
+2. Set the Domain name service configuration by adding the following commands to `/var/lib/boot2docker/bootsync.sh`:
+
+        echo "nameserver 134.226.56.13" >> /etc/resolv.conf
+        echo "nameserver 134.226.32.58" >> /etc/resolv.conf
+
+3. Configure proxy environment variables by adding the following lines to `/var/lib/boot2docker/profile`
+
+        echo "export http_proxy=http://www-proxy.scss.tcd.ie:8080" >> /var/lib/boot2docker/profile
+        echo "export https_proxy=http://www-proxy.scss.tcd.ie:8080" >> /var/lib/boot2docker/profile
+        echo "export HTTPS_PROXY=http://www-proxy.scss.tcd.ie:8080" >> /var/lib/boot2docker/profile
+        echo "export HTTP_PROXY=http://www-proxy.scss.tcd.ie:8080" >> /var/lib/boot2docker/profile
+
+    It's probably no harm putting the same content into the docker user's shell file `~/.profile` (boot2docker does not include bash - the shell is the standard `sh`) by adding the following to `/var/lib/boot2docker/profile`.
+
+        echo "export http_proxy=http://www-proxy.scss.tcd.ie:8080" >> /usr/docker/profile
+        echo "export https_proxy=http://www-proxy.scss.tcd.ie:8080" >> /usr/docker/profile
+        echo "export HTTPS_PROXY=http://www-proxy.scss.tcd.ie:8080" >> /usr/docker/profile
+        echo "export HTTP_PROXY=http://www-proxy.scss.tcd.ie:8080" >> /usr/docker/profile
+
+4. The following listing is a well configured routing table for a docker node in the SCSSNebula network. We need to make your routing information look the same. Type `route -n` on the command line and compare with the following:
+
+        route -n
+        Kernel IP routing table
+        Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+        0.0.0.0         10.63.255.254   0.0.0.0         UG    0      0        0 eth0
+        10.63.0.0       0.0.0.0         255.255.0.0     U     0      0        0 eth0
+        127.0.0.1       0.0.0.0         255.255.255.255 UH    0      0        0 lo
+        172.17.0.0      0.0.0.0         255.255.0.0     U     0      0        0 docker0
+
+    The routing table on your node will most likely not match this, but instead will most likely look like this (or perhaps contain only the second two lines):
+
+        route -n
+        Kernel IP routing table
+        Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+        0.0.0.0         10.63.0.1       0.0.0.0         UG    1      0        0 eth0
+        10.63.0.0       0.0.0.0         255.255.255.0   U     0      0        0 eth0
+        127.0.0.1       0.0.0.0         255.255.255.255 UH    0      0        0 lo
+        172.17.0.0      0.0.0.0         255.255.0.0     U     0      0        0 docker0
+
+    Add the following commands to `/var/lib/boot2docker/bootlocal.sh`, or appropriate similar commands if your initial routing config is somewhat different, to transform the routing table to the necessary configuration.:
+
+        echo "bootsync.sh: sleeping a little bit so route config works..."
+        sleep 15
+        echo"...continuing"
+        sudo route add -net 10.63.0.0 netmask 255.255.0.0 eth0
+        sudo route del default eth0
+        sudo route add default gw 10.63.255.254 eth0
+        sudo route del -net 10.63.0.0 netmask 255.255.255.0 eth0
+
+    These adjustments, if executed on the command line, have immediate effect. You can test the resulting routing with tools such as `ping` and `curl`. Note that the `sleep` command is not necessary for effecting routing changes on the command line, but is necessary for performance of the changes as boot-time, due to an issue with _Tiny Core Linux_, on whcih _boot2docker_ is based. 
+
+5. If you have been following along performing these command at the command line, restart the Docker engine:
+
+        $ sudo /etc/init.d/docker restart
+
+    Now test your network with the following command (the expected output is listed following the command):
+
+        $ docker run hello-world
+        Unable to find image 'hello-world:latest' locally
+        latest: Pulling from library/hello-world
+        c04b14da8d14: Pull complete 
+        Digest: sha256:0256e8a36e2070f7bf2d0b0763dbabdd67798512411de4cdcf9431a1feb60fd9
+        Status: Downloaded newer image for hello-world:latest
+
+        Hello from Docker!
+        This message shows that your installation appears to be working correctly.
+
+        To generate this message, Docker took the following steps:
+        1. The Docker client contacted the Docker daemon.
+        2. The Docker daemon pulled the "hello-world" image from the Docker Hub.
+        3. The Docker daemon created a new container from that image which runs the
+           executable that produces the output you are currently reading.
+        4. The Docker daemon streamed that output to the Docker client, which sent it
+           to your terminal.
+
+        To try something more ambitious, you can run an Ubuntu container with:
+         $ docker run -it ubuntu bash
+
+        Share images, automate workflows, and more with a free Docker Hub account:
+         https://hub.docker.com
+
+        For more examples and ideas, visit:
+         https://docs.docker.com/engine/userguide/
+
+6. If all has worked so far, it remains to test that your boot-time configuration performs the same configuration as you have entered at the command line. Restart the virtual machine to ensure the configuration is reinitialised, login again, and test the installation by attempting the following `docker run` command, or some other `docker run` command on a container you have not previously executed:
+
+        $ docker run docker/whalesay cowsay boo
+        Unable to find image 'docker/whalesay:latest' locally
+        latest: Pulling from docker/whalesay
+        e190868d63f8: Pull complete 
+        909cd34c6fd7: Pull complete 
+        0b9bfabab7c1: Pull complete 
+        a3ed95caeb02: Pull complete 
+        00bf65475aba: Pull complete 
+        c57b6bcc83e3: Pull complete 
+        8978f6879e2f: Pull complete 
+        8eed3712d2cf: Pull complete 
+        Digest: sha256:178598e51a26abbc958b8a2e48825c90bc22e641de3d31e18aaf55f3258ba93b
+        Status: Downloaded newer image for docker/whalesay:latest
+         _____ 
+        < boo >
+         ----- 
+            \
+             \
+              \     
+                            ##        .            
+                      ## ## ##       ==            
+                   ## ## ## ##      ===            
+               /""""""""""""""""___/ ===        
+          ~~~ {~~ ~~~~ ~~~ ~~~~ ~~ ~ /  ===- ~~~   
+               \______ o          __/            
+                \    \        __/             
+                 \____\______/   
+
+
+    Your network is now configured correctly, and persistently, and Docker is able to retrieve data from remote sites.      
+
 ### 3.2.4 Configure Networking for your new boot2docker instance - the automated way###
 The disadvantage of the `docker-machine` process is that each docker host is created with a non-persistent boot2docker image and thus starts execution misconfigured for use on the SCSSNebula cloud. There are in fact advanced methods that support the building or fully configured bespoke boot2docker images, but these are beyond the scope of this guide. We have so far described a manual process for logging in to a new boot2docker host, and configuring some persistent files that will ensure that the host will be correctly configured on reboot. However, this is a tedious process, and we would prefer to avoid a manual configuration of each host we create. The following script can be executed from the master node where you run `docker-machine` immediately after creating the new docker host and will perform all the necessary configuration for you. It creates a set of files in persistent locations in the docker host's file system that are always executed on boot, and that perform the necessary configuration after the base boot2docker image has started. 
 
