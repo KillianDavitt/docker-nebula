@@ -1,19 +1,17 @@
 ## Section 3 - Setting up Docker on SCSSNebula #
 Next we move on to configuring servers to deploy your projects.
 
-This section explains how to configure virtual machines running docker, which we will refer to as _docker hosts_, on the SCSSNebula OpenNebula installation. You do not need to do this to perform development using Haskell and Docker as described above, but if you want to deploy your containers, you will need somewhere to deploy them, and this guide solves this. It will explain how to provision two kinds of nodes into SCSSNebula: a fairly standard _Debian_ based linux virtual machine, and a [boot2docker](https://github.com/boot2docker/boot2docker) virtual machine, this being a lightweight linux distribution specifically designed to run Docker containers. 
+This section explains how to configure virtual machines running docker, which we will refer to as _docker hosts_, on the SCSSNebula OpenNebula installation. It will explain how to provision two kinds of nodes into SCSSNebula: a fairly standard _Debian_ based linux virtual machine, and a [boot2docker](https://github.com/boot2docker/boot2docker) virtual machine, this being a lightweight linux distribution specifically designed to run Docker containers. 
 
-Each provisioning method has advantages and disadvantages. The _Debian_ based solution is simple and great for one-off docker host creation, whereas the _boot2docker_ method is more scaleable, making the creation and management of sets of nodes easier, but involving an additional tool called `docker-machine`. We explain each setup in turn. Note that these instructions are for the creation of virtual machines of the SCSS OpenNebula installation, and thus include configuration details specific to that cloud, and omit configuration details not necessary for that cloud. 
-
+Debian machines are easier to setup, but boot_2_docker machines are much more scaleable and less resource demanding.
 
 # Create a _Debian_ SCSSNebula docker host ##
 
+First, we create a template of an image so that it will be easy for us to reuse the configuration.
 
-We will now explain how to provision a node in the SCSSNebula, fully configured to act as a docker host. We must provision a node using one of the UI's provided by SCSSNebula, using a disk image supplied, and then install docker on this node. Once you have a suitably configured virtual machine, the disk image associated with it can be used as a basis for new virtual machines so that you do not have to repeat this configuration. We conclude this section by explaining how to save the disk image for future use. 
+OpenNebula UI is: [here](https://scssnebulaselfservice.scss.tcd.ie) for staff and students
 
-Note that you can achieve this via the updated UI available to SCSSNebula users available [here](https://scssnebulaselfservice.scss.tcd.ie) for staff and students
-
-Note also that you will most likely not be able to access these UIs from outside the college networks. 
+The UI can't be accessed outside of college.
 
 ### Create a virtual machine using the newer UI ###
 
@@ -46,18 +44,22 @@ First, lets make sure the node is up to date:
 ```bash
 apt-get update
 apt-get upgrade
+apt-get install wget
 ```
 
-Out node is now up to date. There are various ways to install Docker onto your new Debian node, but this seem to be the most straightforward:
+Now, we'll set the tcd proxy settings
+```bash
+echo "export http_proxy='http://www-proxy.scss.tcd.ie:8080'" >> ~/.bashrc
+echo "export https_proxy='https://www-proxy.scss.tcd.ie:8080'" >> ~/.bashrc
+```
+
+Now we can install docker...
 
 ```bash
 wget -qO- https://get.docker.com/ | sh
 ```
 
-This should kick off a long installation process. If it doesn't, then you will probably need `http_proxy` and `https_proxy`set correctly. Check in your environment (run `env` from the command line), and set them both to `http://www-proxy.scss.tcd.ie:8080` they are not set. Note also that you will need `wget` to run that command, which may require you to perform `sudo apt-get wget` on the command line to install it. 
-
-Once the installation is finished, test the docker installation by running:
-
+Lets test docker is working.
 ```bash
 $ docker version
 Client:
@@ -139,23 +141,20 @@ For more examples and ideas, visit:
  https://docs.docker.com/engine/userguide/
 ```
 
-If you get that working, Docker is now running on your node. However, if the `docker run` command did not succeed, you most likely have a network configuration problem. It may be worth your while reviewing the network configuration steps described in the section below on creating a _boot2docker_ based host, to see if you can diagnose and correct the problem. 
-
 ###  Final configuration and baking###
 
 This is probably a good time to enable [[ssh passwordless access]] access to your node, so that you do not need to keep using the username/password combination to login to your new node. 
 
 Your virtual machine is now well configured to act as a docker virtual machine and run docker containers in the SCSSNebula cloud. To avoid having to repeat these steps in the future, it is sensible to now bake the virtual machine image for use as a base image for new virtual machines. To do this, perform the following:
 
-1. Install any further software you wish all nodes to have installed. Note that services such as databases are usually installed on docker hosts within dedicated containers, and so in general you should not install such software into the base image. 
 
-2. Shutdown the virtual machine from the command line prompt as follows:
+1. Shutdown the virtual machine from the command line prompt as follows:
 
         $ poweroff
 
-3. Delete the virtual machine. Note that in deleting the virtual machine the disk image was associated with, you have not deleted the disk image. 
+2. Delete the virtual machine. Note that in deleting the virtual machine the disk image was associated with, you have not deleted the disk image. 
 
-4. Make the disk image that was associated with the now deleted virtual machine _non-persistent_ via the appropriate user interface option (you will have previously made the image persistent). 
+3. Make the disk image that was associated with the now deleted virtual machine _non-persistent_ via the appropriate user interface option (you will have previously made the image persistent). 
 
 You can now create new virtual machines based on this saved, configured image by using is as the base image in the UI based virtual machine creation processes described above. 
 
@@ -164,7 +163,7 @@ _Note however, that for each new docker host you wish to create, you will need t
 ## 3.2 Create a _boot2docker_ SCSSNebula docker host ##
 We are now going to create and configure an OpenNebula [boot2docker](https://github.com/boot2docker/boot2docker) virtual machine that we will use to run docker containers in the SCSSNebula cloud. 
 
-*boot2docker* is a very lightweight OS image designed to act as a docker host, that is based on [Tiny Core Linux](http://tinycorelinux.net/) that runs entirely in RAM, keeping volatile data in a secondary data disk mounted into the OS file system. Note that this means that we *can not* modify and save the boot2docker image as we did with our Debian based process above - most changes we make will be lost on reboot. To configure a boot2docker virtual machine _persistently_ to work correctly in the SCSSNebula, we must restrict out modifications to particular configuration and script files located in file system directories stored and mounted from the secondary disk. 
+*boot2docker* is a very lightweight OS image designed to act as a docker host. It runs almost entriely in ram. Note that this means that we *can not* modify and save the boot2docker image as we did with our Debian based process above - most changes we make will be lost on reboot. To configure a boot2docker virtual machine _persistently_ to work correctly in the SCSSNebula, we must restrict out modifications to particular configuration and script files located in file system directories stored and mounted from the secondary disk. 
 
 Our process will be to first create a new boot2docker based virtual machine using a UI, and then login and add configuration details to that machine. Note that this means that each boot2docker machine we create must be individually configured. This is a significant manual overhead, and so after we have explained the necessary configuration, we will discuss how to automate this configuration step so that we can more easily create and configure sets of virtual machines.
 
