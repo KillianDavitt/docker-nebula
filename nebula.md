@@ -351,63 +351,16 @@ docker@testlast:~$
 ### 3.2.4 Configure Networking for your new boot2docker instance - the automated way###
 The disadvantage of the `docker-machine` process is that each docker host is created with a non-persistent boot2docker image and thus starts execution misconfigured for use on the SCSSNebula cloud. There are in fact advanced methods that support the building or fully configured bespoke boot2docker images, but these are beyond the scope of this guide. We have so far described a manual process for logging in to a new boot2docker host, and configuring some persistent files that will ensure that the host will be correctly configured on reboot. However, this is a tedious process, and we would prefer to avoid a manual configuration of each host we create. The following script can be executed from the master node where you run `docker-machine` immediately after creating the new docker host and will perform all the necessary configuration for you. It creates a set of files in persistent locations in the docker host's file system that are always executed on boot, and that perform the necessary configuration after the base boot2docker image has started. 
 
-Here is the script. Save it to a file named `docker-configure` and put in your path. 
+[Here](/scripts/docker-config.sh) is the script. Save it to a file named `docker-configure` and put in your path. 
 
-````
-echo "Configuring node $1..."
-
-if [ "$#" -ne 1 ] ; then
-  echo "Usage: $0 MACHINE_NAME" >&2
-  exit 1
-fi
-
-docker-machine ssh $1 <<'ENDSSH'
-sudo sh -c "echo \"sysctl net.ipv4.conf.all.forwarding=1\" >> /var/lib/boot2docker/bootlocal.sh"
-sudo sh -c "echo \"echo 'nameserver 134.226.56.13' >> /etc/resolv.conf\" >> /var/lib/boot2docker/bootlocal.sh"
-sudo sh -c "echo \"echo 'nameserver 134.226.32.58' >> /etc/resolv.conf\" >> /var/lib/boot2docker/bootlocal.sh"
-sudo sh -c "echo \"export http_proxy=http://www-proxy.scss.tcd.ie:8080\" >> /var/lib/boot2docker/profile"
-sudo sh -c "echo \"export https_proxy=http://www-proxy.scss.tcd.ie:8080\" >> /var/lib/boot2docker/profile"
-sudo sh -c "echo \"export HTTPS_PROXY=http://www-proxy.scss.tcd.ie:8080\" >> /var/lib/boot2docker/profile"
-sudo sh -c "echo \"export HTTP_PROXY=http://www-proxy.scss.tcd.ie:8080\" >> /var/lib/boot2docker/profile"
-sudo sh -c "echo \"export http_proxy=http://www-proxy.scss.tcd.ie:8080\" >> /home/docker/profile"
-sudo sh -c "echo \"export https_proxy=http://www-proxy.scss.tcd.ie:8080\" >> /home/docker/profile"
-sudo sh -c "echo \"export HTTPS_PROXY=http://www-proxy.scss.tcd.ie:8080\" >> /home/docker/profile"
-sudo sh -c "echo \"export HTTP_PROXY=http://www-proxy.scss.tcd.ie:8080\" >> /home/docker/profile"
-
-sudo sh -c "echo \"echo 'bootsync.sh: sleeping a little bit so route config works...'\" >> /var/lib/boot2docker/bootlocal.sh"
-sudo sh -c "echo \"sleep 15\" >> /var/lib/boot2docker/bootlocal.sh"
-sudo sh -c "echo \"echo '...continuing'\" >> /var/lib/boot2docker/bootlocal.sh"
-sudo sh -c "echo \"sudo route add -net 10.63.0.0 netmask 255.255.0.0 eth0\" >> /var/lib/boot2docker/bootlocal.sh"
-sudo sh -c "echo \"sudo route del default eth0\" >> /var/lib/boot2docker/bootlocal.sh"
-sudo sh -c "echo \"sudo route add default gw 10.63.255.254 eth0\" >> /var/lib/boot2docker/bootlocal.sh"
-sudo sh -c "echo \"sudo route del -net 10.63.0.0 netmask 255.255.255.0 eth0\" >> /var/lib/boot2docker/bootlocal.sh"
-
-# the next command disables the username/password combination for the docker account. 
-# If you enable this, then you will only be able to access the machine using the command
-#   'docker-machine ssh MACHINENAME'
-# If you do not enable this command, then the username 'docker' and password 'tcuser' will 
-# gain sudo enabled access to the machine. This is a security risk.
-
-# sudo sh -c "echo \"sudo passwd -d docker\" >> /var/lib/boot2docker/bootlocal.sh"
-
-echo "Configuration files initialised."
-echo "Restarting machine to enable new configuration."
-sudo reboot
-ENDSSH
-echo "Configuration process complete. Please wait for node to restart."
-````
 
 The node creation and configuration process thus is performed as follows:
 
-````
-    $ docker-machine create --driver opennebula --opennebula-network-id 6 --opennebula-image-id 1155 --opennebula-b2d-size 1000 test   # for example
-        ...
-    $ ./docker-configure test
-    Configuring node test...
-    Configuration files initialised. 
-    Restarting machine to enable new configuration.
-    Configuration process complete. Please wait for node to restart.
-````
+```
+docker-machine create --driver opennebula --opennebula-network-id 6 --opennebula-image-id 1155 --opennebula-b2d-size 1000 test   # for example
+    ...
+./docker-configure test
+```
 
 And so we end up finally with a node creation process that is relatively simple.
 
