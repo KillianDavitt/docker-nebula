@@ -112,9 +112,9 @@ Your virtual machine is now well configured to act as a docker virtual machine a
 
 
 1. Shutdown the virtual machine from the command line prompt as follows:
-
-        $ poweroff
-
+    ```bash
+    poweroff
+    ```
 2. Delete the virtual machine. Note that in deleting the virtual machine the disk image was associated with, you have not deleted the disk image. 
 
 3. Make the disk image that was associated with the now deleted virtual machine _non-persistent_ via the appropriate user interface option (you will have previously made the image persistent). 
@@ -146,7 +146,7 @@ We can create boot2docker virtual machines using either a UI based process along
  
     1. On the storage tab, select your boot2docker as Disk 0. 
 
-        Add a second volatile disk at this point, of a reasonable size to store containers. The boot2docker image is configured to expect a volatile second disk for storing containers and that will be mounted into the file system directory structure.
+    Add a second volatile disk at this point, of a reasonable size to store containers. The boot2docker image is configured to expect a volatile second disk for storing containers and that will be mounted into the file system directory structure.
 
     2. On the Network tab, select the `ResearchNet [routed]` network.
 
@@ -164,11 +164,11 @@ We can create boot2docker virtual machines using either a UI based process along
 In the following, we explain how to install `docker-machine`, and then describe how to create a standalone virtual machine using the tool. You can install `docker-machine` on any machine you like, including your laptop, provided that the machine has direct network access the the SCSSNebula cloud. 
 
 You can test access to the SCSSNebula system by performing the following commands on the install machine:
-
-    $ apt-get install curl   # if necessary
-    $ curl http://scssnebulamgr.scss.tcd.ie:2633/RPC2
-    <HTML><HEAD><TITLE>Error 405</TITLE></HEAD><BODY><H1>Error 405</H1><P>POST is the only HTTP me...
-
+```bash
+$ apt-get install curl   # if necessary
+$ curl http://scssnebulamgr.scss.tcd.ie:2633/RPC2
+<HTML><HEAD><TITLE>Error 405</TITLE></HEAD><BODY><H1>Error 405</H1><P>POST is the only HTTP me...
+```
 If you see that output, then you are all set to proceed.
 
 `docker-machine` supports the creation of Docker machines on a number of cloud platforms. There is an OpenNebula plugin that makes it possible to use `docker-machine` with OpenNebula clouds, such as SCSSNebula. We will install both `docker-machine` and the plugin, assuming our target machine is an SCSSNebula node based on Debian. Consult [documentation](https://docs.docker.com/machine/install-machine/) for details on how to install on other platforms.  
@@ -178,47 +178,43 @@ Note that all the following presumes that you have network access on the install
 
 To install docker-machine, proceed as follows:
 
-1. If necessary install the `curl`:  
-        ```bash
-        apt-get install curl 
-        ```
-2. Download Docker-machine and extract it to your PATH:
+1. Download Docker-machine and extract it to your PATH:
 
-        ```bash
-         curl -L https://github.com/docker/machine/releases/download/v0.7.0/docker-machine-`uname -s`-` uname -m` > ~/docker-machine
+    ```bash
+     curl -L https://github.com/docker/machine/releases/download/v0.7.0/docker-machine-`uname -s`-` uname -m` > ~/docker-machine
          
-         # Make it exectuable
-         chmod +x ~/docker-machine
+     # Make it exectuable 
+     chmod +x ~/docker-machine
 
-         # Move it to your PATH
-         mv ~/docker-machine /usr/local/bin/docker-machine 
-        ```
+     # Move it to your PATH
+     mv ~/docker-machine /usr/local/bin/docker-machine 
+    ```
 
-3. Check the installation by displaying the Machine version:
+2. Check the installation by displaying the Machine version:
     ```bash
     docker-machine version
     ```
-4. Retrieve the shell completion scripts repository from GitHub, and follow the simple instructions at the top of each script to install them. Once installed, you can delete the repository.
-
-        git clone https://github.com/docker/machine/tree/master/contrib/completion/bash
-
+3. Retrieve the shell completion scripts repository from GitHub, and follow the simple instructions at the top of each script to install them. Once installed, you can delete the repository.
+    ```bash
+    git clone https://github.com/docker/machine/tree/master/contrib/completion/bash
+    ```
     Add the following to your `~/.bashrc` file:
-
-        PS1='[\u@\h \W$(__docker_machine_ps1)]\$ '
-        
+    ```bash
+    echo "PS1='[\u@\h \W$(__docker_machine_ps1)]\$ '" >> ~/.bashrc
+    ```
 
 ####Install the docker-machine-opennebula plugin ####
 
-1. To install the `docker-machine-opennebula plugin, you are first going to need to install the programming language [Go](http://www.golang.org/), and [GoDep](https://github.com/tools/godep). Do that as follows:
+1. To install the docker-machine-opennebula plugin, you are first going to need to install the programming language [Go](http://www.golang.org/), and [GoDep](https://github.com/tools/godep). Do that as follows:
 
-
-        $ wget https://storage.googleapis.com/golang/go1.6.3.linux-amd64.tar.gz
-        $ tar -C /usr/local -xzf go1.6.3.linux-amd64.tar.gz
-
+    ```bash
+    wget https://storage.googleapis.com/golang/go1.6.3.linux-amd64.tar.gz
+     tar -C /usr/local -xzf go1.6.3.linux-amd64.tar.gz
+    ```
 
 2. Add the following to `/etc/profile` so that go is available to all users. 
 
-        export PATH=$PATH:/usr/local/go/bin
+    export PATH=$PATH:/usr/local/go/bin
   
 
 3. Next, setup a workspace for Go. 
