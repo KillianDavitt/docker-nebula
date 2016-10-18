@@ -58,8 +58,7 @@ This should kick off a long installation process. If it doesn't, then you will p
 
 Once the installation is finished, test the docker installation by running:
 
-```
-#!bash
+```bash
 $ docker version
 Client:
  Version:      1.12.1
