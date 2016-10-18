@@ -104,24 +104,7 @@ docker run hello-world
 ```
 Docker will download the latest image of 'hello-world' for you and run it.
 
-###  Final configuration and baking###
-
 This is probably a good time to enable [[ssh passwordless access]] access to your node, so that you do not need to keep using the username/password combination to login to your new node. 
-
-Your virtual machine is now well configured to act as a docker virtual machine and run docker containers in the SCSSNebula cloud. To avoid having to repeat these steps in the future, it is sensible to now bake the virtual machine image for use as a base image for new virtual machines. To do this, perform the following:
-
-
-1. Shutdown the virtual machine from the command line prompt as follows:
-    ```bash
-    poweroff
-    ```
-2. Delete the virtual machine. Note that in deleting the virtual machine the disk image was associated with, you have not deleted the disk image. 
-
-3. Make the disk image that was associated with the now deleted virtual machine _non-persistent_ via the appropriate user interface option (you will have previously made the image persistent). 
-
-You can now create new virtual machines based on this saved, configured image by using is as the base image in the UI based virtual machine creation processes described above. 
-
-_Note however, that for each new docker host you wish to create, you will need to clone your base image, make the clone persistent, and build the new machine using the cloned image. This is so that each docker host can store containers persistently. This is a somewhat cumbersome if you need to create many docker hosts, resulting in a proliferation of disk images, one for each host, and so we next provide a process for creating docker hosts using a single non-volatile image called `boot2docker`_
 
 ## 3.2 Create a _boot2docker_ SCSSNebula docker host ##
 We are now going to create and configure an OpenNebula [boot2docker](https://github.com/boot2docker/boot2docker) virtual machine that we will use to run docker containers in the SCSSNebula cloud. 
@@ -161,15 +144,7 @@ We can create boot2docker virtual machines using either a UI based process along
 ### Create virtual machine using docker-machine ###
 `docker-machine` is a client side tool that provides a simple command line interface that supports the creation of Docker virtual machines (known in the jargon as 'provisioning') and the management of groups of Docker machines. It is very easy to use, arguably easier to use that the SCSSnebula UI process described above, but it must be installed before use. 
 
-In the following, we explain how to install `docker-machine`, and then describe how to create a standalone virtual machine using the tool. You can install `docker-machine` on any machine you like, including your laptop, provided that the machine has direct network access the the SCSSNebula cloud. 
-
-You can test access to the SCSSNebula system by performing the following commands on the install machine:
-```bash
-$ apt-get install curl   # if necessary
-$ curl http://scssnebulamgr.scss.tcd.ie:2633/RPC2
-<HTML><HEAD><TITLE>Error 405</TITLE></HEAD><BODY><H1>Error 405</H1><P>POST is the only HTTP me...
-```
-If you see that output, then you are all set to proceed.
+Lets install docker-machine on the debian machine we made above.
 
 `docker-machine` supports the creation of Docker machines on a number of cloud platforms. There is an OpenNebula plugin that makes it possible to use `docker-machine` with OpenNebula clouds, such as SCSSNebula. We will install both `docker-machine` and the plugin, assuming our target machine is an SCSSNebula node based on Debian. Consult [documentation](https://docs.docker.com/machine/install-machine/) for details on how to install on other platforms.  
 
