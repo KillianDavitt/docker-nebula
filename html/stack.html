@@ -75,7 +75,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>The Yesod framework is just a project dependency as far as your haskell development is concerned, so you do not need to explicitly install the framework - it will be installed as needed when you use stack to build your project, as with any other project dependency.</p>
 <p>But Yesod comes with a set of command line tools that do need to be installed to support Yesod development, and this is how (using stack):</p>
 <div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">stack</span> build yesod-bin cabal-install --install-ghc</code></pre></div>
-<p>If you do this within a Stack project, then the project config will be used - you are essentially building the tools in the context of your project. If you run this command outside a stack project, then you global Stack config will be used. Do not worry about this for the moment. Just note that if you ever need to install Yesod command line tools that seem to be missing, this is how, and you run that command at the prompt where the problem was noted. We will include this step in the development workflow by default below, so there should be no need to run this command outside of that workflow.</p>
-<p>Note that this command will take a few minutes on a fresh install - it is downloading and occasionally building haskell code, including dependencies (at time of writing, 104 steps).</p>
+<p>This command will take ages :(</p>
+<p>If you do this within a Stack project, then the project config will be used - you are essentially building the tools in the context of your project. If you run this command outside a stack project, then you global Stack config will be used. Do not worry about this for the moment.</p>
 </body>
 </html>

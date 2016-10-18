@@ -24,10 +24,6 @@ docker:
    enable: true
 ```
 
-There are various guides online that you may come accross that detail an alternative process based on the creation of a file called `DockerFile` to manage your docker instance build process. You don't need to do this any more, because Stack takes care of everything. Details on Stack/Docker integration are available [here](https://docs.haskellstack.org/en/stable/docker_integration/). 
-
-**Windows Users:** Note that Stack/Docker integration presently does not work for Windows - if that's you then for the moment at least you will have to manage Docker instance configuration and execution via the `Dockerfile` method. [This blog](https://ilikewhenit.works/blog/1) will help. You will end up doing more manual configuration and running commands like `sudo docker build -t yourname/yesod ./` to build your software instead of simply running stack to compile and execute, but the development process is broadly similar once you have setup. 
-
 ## Compile your project ##
 Assuming that Stack/Docker integration is supported:
 
@@ -44,8 +40,7 @@ We are now ready to build our project for the first time:
 ```bash
 stack build
 ```
-The first build will take quite some time - perhaps 20 minutes or so. Go take a break. Appreciate that a tool stack performing these task automatically means a developer not having to do so, taking even longer. Stack will use precompiled libraries if they exist on your machine, downloading and building them if the particular library version required is not already cached.The stack build system is very robust, so the chances of this process failing before it reaches...ahem...your own code is very low - do not entertain the need to monitor the build.
-
+The first build will take quite some time - perhaps 20 minutes or so.
 ## Test your Project ##
 You are obviously going to run the test suite yes? :)
 

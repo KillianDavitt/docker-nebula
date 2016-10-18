@@ -10,6 +10,5 @@ Let's first briefly explain what each component is and what each does for us. If
 
 * [Yesod](http://yesodweb.com) is a Haskell web framework for development of type-safe, RESTful web applications. There are other frameworks for building web applications, but Yesod is substantial, mature, and well documented (there is a good book by the key project author). A good post considering the question why you should use it is to be found [here](http://www.yesodweb.com/page/about).
 
-In summary, we will create and manage Yesod projects using Stack, and compile them and run them on a containerised virtual machine light that replicates our deployment environment and simplifies deployment greatly. Getting all this to work can be a little tricky however. So what follows is a step by step repeatable workflow, beginning with how to install the software and following with the detail of flag, settings and procedures to follow to make this toolchain work well together. 
 
 

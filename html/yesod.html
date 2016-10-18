@@ -52,7 +52,6 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li><a href="#create-an-initial-yesod-project">Create an initial Yesod project</a></li>
 <li><a href="#enable-docker-as-the-build-and-execution-platform">Enable Docker as the build and execution platform</a></li>
 <li><a href="#compile-your-project">Compile your project</a></li>
-<li><a href="#test-your-project">Test your Project</a></li>
 <li><a href="#execute-your-project-and-use">2.5 Execute your project and use</a></li>
 <li><a href="#develop-your-project">Develop your Project</a></li>
 </ul></li>
@@ -70,8 +69,6 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>The good news is that Stack has Docker support out-of-the-box, and it is a relatively simple fix to enable it for your project. Open stack.yaml and add the following configuration to the file.</p>
 <div class="sourceCode"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span class="fu">docker:</span>
    <span class="fu">enable:</span> true</code></pre></div>
-<p>There are various guides online that you may come accross that detail an alternative process based on the creation of a file called <code>DockerFile</code> to manage your docker instance build process. You don’t need to do this any more, because Stack takes care of everything. Details on Stack/Docker integration are available <a href="https://docs.haskellstack.org/en/stable/docker_integration/">here</a>.</p>
-<p><strong>Windows Users:</strong> Note that Stack/Docker integration presently does not work for Windows - if that’s you then for the moment at least you will have to manage Docker instance configuration and execution via the <code>Dockerfile</code> method. <a href="https://ilikewhenit.works/blog/1">This blog</a> will help. You will end up doing more manual configuration and running commands like <code>sudo docker build -t yourname/yesod ./</code> to build your software instead of simply running stack to compile and execute, but the development process is broadly similar once you have setup.</p>
 <h2 id="compile-your-project">Compile your project</h2>
 <p>Assuming that Stack/Docker integration is supported:</p>
 <p>Now lets be sure the Yesod command line tools are built:</p>
@@ -79,9 +76,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>Next run <code>stack setup</code>. In you forget to do this, and carry on to try to build your project, Stack will stop and remind you.</p>
 <p>We are now ready to build our project for the first time:</p>
 <div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">stack</span> build</code></pre></div>
-<p>The first build will take quite some time - perhaps 20 minutes or so. Go take a break. Appreciate that a tool stack performing these task automatically means a developer not having to do so, taking even longer. Stack will use precompiled libraries if they exist on your machine, downloading and building them if the particular library version required is not already cached.The stack build system is very robust, so the chances of this process failing before it reaches…ahem…your own code is very low - do not entertain the need to monitor the build.</p>
-<h2 id="test-your-project">Test your Project</h2>
-<p>You are obviously going to run the test suite yes? :)</p>
+<p>The first build will take quite some time - perhaps 20 minutes or so. ## Test your Project ## You are obviously going to run the test suite yes? :)</p>
 <div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">stack</span> test</code></pre></div>
 <h2 id="execute-your-project-and-use">2.5 Execute your project and use</h2>
 <p>Use the following command line to execute your Yesod Project.</p>
