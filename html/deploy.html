@@ -34,8 +34,10 @@ image:
 <p>With this in place, you can generate a container image by running <code>stack image container</code> on the command line in the project home directory. Once you have an image you can push it to a registry. There are two basic choices. You can push to <em>Docker Hub</em> or a similar third party registry, or you can create your own registry. We examine each case in turn.</p>
 <h2 id="using-dockerhub">Using DockerHub</h2>
 <p>Go to <a href="http://dockerhub.com">Docker Hub</a> and create an account, or alternatively go to some other Docker compatible registry service and create an account.</p>
-<p>With an account created, you can now push that image to a docker registry using standard docker commands. Note that you can name your image as you like, so long as the name matches the appropriate pattern for your registry. So, for <em>Docker Hub</em>, the name should match the pattern <code>registry-account-name/image-name</code>.</p>
-<pre><code>$ docker push registry-account-name/myapp  # modify push parameter as approptiate</code></pre>
+<p>Login with your account</p>
+<pre><code>docker login</code></pre>
+<p>With an account created, you can now push that image to a docker registry using standard docker commands. Note that you can name your image as you like, so long as the name matches the appropriate pattern for your registry. So, for <em>Docker Hub</em>, the name should match the pattern <code>username/image-name</code>.</p>
+<pre><code>docker push username/myapp  # modify push parameter as approptiate</code></pre>
 <p>To run the image on a docker host, login to the host of initialise your docker client with environment variables appropriately, and type:</p>
 <pre><code>$ docker run registry-account-name/myapp</code></pre>
 <p>That is all there is to it if you are happy to use <em>Docker Hub</em>, or an equivalent registry service.</p>

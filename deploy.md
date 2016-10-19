@@ -26,9 +26,14 @@ With this in place, you can generate a container image by running `stack image c
 
 Go to [Docker Hub](http://dockerhub.com) and create an account, or alternatively go to some other Docker compatible registry service and create an account. 
 
-With an account created, you can now push that image to a docker registry using standard docker commands. Note that you can name your image as you like, so long as the name matches the appropriate pattern for your registry. So, for _Docker Hub_, the name should match the pattern `registry-account-name/image-name`.
+Login with your account 
+    
+    docker login
 
-    $ docker push registry-account-name/myapp  # modify push parameter as approptiate
+With an account created, you can now push that image to a docker registry using standard docker commands. Note that you can name your image as you like, so long as the name matches the appropriate pattern for your registry. So, for _Docker Hub_, the name should match the pattern `username/image-name`.
+
+
+    docker push username/myapp  # modify push parameter as approptiate
 
 To run the image on a docker host, login to the host of initialise your docker client with environment variables appropriately, and type:
 
