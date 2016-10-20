@@ -326,7 +326,9 @@ docker@testlast:~$
 ### 3.2.4 Configure Networking for your new boot2docker instance - the automated way###
 The disadvantage of the `docker-machine` process is that each docker host is created with a non-persistent boot2docker image and thus starts execution misconfigured for use on the SCSSNebula cloud. There are in fact advanced methods that support the building or fully configured bespoke boot2docker images, but these are beyond the scope of this guide. We have so far described a manual process for logging in to a new boot2docker host, and configuring some persistent files that will ensure that the host will be correctly configured on reboot. However, this is a tedious process, and we would prefer to avoid a manual configuration of each host we create. The following script can be executed from the master node where you run `docker-machine` immediately after creating the new docker host and will perform all the necessary configuration for you. It creates a set of files in persistent locations in the docker host's file system that are always executed on boot, and that perform the necessary configuration after the base boot2docker image has started. 
 
-[Here](/scripts/docker-config.sh) is the script. Save it to a file named `docker-configure` and put in your path. 
+```bash
+wget https://raw.githubusercontent.com/KillianDavitt/docker-nebula/master/scripts/docker-config.sh
+```
 
 
 The node creation and configuration process thus is performed as follows:
