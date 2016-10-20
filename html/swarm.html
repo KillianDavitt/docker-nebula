@@ -75,26 +75,9 @@ d71dfcd5f349d4404d1996aedddc38147c2c4fd2a929242f8c247cd22bfa4a4c</code></pre>
 <p>Run the command <code>docker ps</code> to verify that the discovery backend is running.</p></li>
 <li><p>Create and distribute TLS keys</p>
 <p>To secure the swarm, we need to generate a set of TLS key pairs for the managers and swam nodes. These will be used for the swarm only, by the swarm software containers, and are not to be confused with TLS configuration you may have performed to secure docker client to engine communication.</p>
-<pre><code>As we probably want to perform this across a set of nodes, for simplicity, the following script collects all relevant operations for node configuration, such that executing `configure-b2d-swarm NODENAME ca.pem ca-priv-key.pem` will configure the node NODENAME:</code></pre>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">echo</span> <span class="st">&quot;Configuring node </span><span class="ot">$1</span><span class="st"> as swarm member.&quot;</span>
-
-<span class="kw">if [</span> <span class="st">&quot;</span><span class="ot">$#</span><span class="st">&quot;</span> <span class="ot">-ne</span> 3<span class="kw"> ]</span> ; <span class="kw">then</span>
-  <span class="kw">echo</span> <span class="st">&quot;Usage: </span><span class="ot">$0</span><span class="st"> MACHINE_NAME ca.pem ca-priv-key.pem&quot;</span> <span class="kw">&gt;&amp;2</span>
-  <span class="kw">echo</span> <span class="st">&quot;    Configures the machine for TLS access as member of the swarm.&quot;</span> <span class="kw">&gt;&amp;2</span>
-  <span class="kw">exit</span> 1
-<span class="kw">fi</span>
-
-<span class="kw">openssl</span> genrsa -out <span class="ot">$1</span>-priv-key.pem 2048
-<span class="kw">openssl</span> req -subj <span class="st">&quot;/CN=swarm&quot;</span> -new -key <span class="ot">$1</span>-priv-key.pem -out <span class="ot">$1</span>.csr
-<span class="kw">openssl</span> x509 -req -days 1825 -in <span class="ot">$1</span>.csr -CA <span class="ot">$2</span> -CAkey <span class="ot">$3</span> -CAcreateserial -out <span class="ot">$1</span>-cert.pem -extensions v3_req -extfile /usr/lib/ssl/openssl.cnf
-<span class="kw">docker-machine</span> ssh <span class="ot">$1</span> <span class="st">&quot;sudo mkdir -p /var/lib/boot2docker/swarm-certs&quot;</span>
-<span class="kw">cat</span> <span class="ot">$2</span> <span class="kw">|</span> <span class="kw">docker-machine</span> ssh X <span class="st">&quot;sudo sh -c </span><span class="dt">\&quot;</span><span class="st">cat - &gt; /var/lib/boot2docker/swarm-certs/ca.pem</span><span class="dt">\&quot;</span><span class="st">&quot;</span>
-<span class="kw">cat</span> <span class="ot">$1</span>-cert.pem <span class="kw">|</span> <span class="kw">docker-machine</span> ssh <span class="ot">$1</span> <span class="st">&quot;sudo sh -c </span><span class="dt">\&quot;</span><span class="st">cat - &gt; /var/lib/boot2docker/swarm-certs/cert.pem</span><span class="dt">\&quot;</span><span class="st">&quot;</span>
-<span class="kw">cat</span> <span class="ot">$1</span>-priv-key.pem <span class="kw">|</span> <span class="kw">docker-machine</span> ssh <span class="ot">$1</span> <span class="st">&quot;sudo sh -c </span><span class="dt">\&quot;</span><span class="st">cat - &gt; /var/lib/boot2docker/swarm-certs/key.pem</span><span class="dt">\&quot;</span><span class="st">&quot;</span>
-<span class="kw">rm</span> <span class="ot">$1</span>-priv-key.pem       <span class="co"># these files no longer needed locally</span>
-<span class="kw">rm</span> <span class="ot">$1</span>-cert.pem
-<span class="kw">rm</span> <span class="ot">$1</span>.csr
-<span class="kw">echo</span> <span class="st">&quot;Configuration complete.&quot;</span></code></pre></div>
+<p>As we probably want to perform this across a set of nodes, for simplicity, the following script collects all relevant operations for node configuration, such that executing <code>swarm-config.sh NODENAME ca.pem ca-priv-key.pem</code> will configure the node NODENAME:</p>
+<p>Download the script</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">wget</span> https://raw.githubusercontent.com/KillianDavitt/docker-nebula/master/scripts/swarm-config.sh</code></pre></div>
 <p>If you have followed the steps outlined, you now have compatible certificates installed on all machines, with the certificate authority that generated these certificates trusted by all machines. We are now ready to run the swam software on our nodes, using these certificates to secure host-to-host communication.</p></li>
 <li><p>Create swarm managers.</p>
 <p>In a production environment, you should create two swarm managers and configure them to work together to maintain the cluster. So lets do this. We will create a primary manager on the <code>docker-machine</code> node (note that this must be a node in the SCSSNebula cloud) and a secondary manager on the <code>registry</code> node (also an SCSSNebula node).</p>
