@@ -9,8 +9,6 @@ To proceed you must have created a set of nodes in the SCSSNebula cloud, and con
 
 1. Create a discovery backend.
 
-    FINISH: not all that happy about this discovery backend - also need to secure.
-
     To begin the swarm configuration for your machine set, we first create a _discovery backend_ which is a service that lets swarm members find each other. Login to your registry host (this will be a lightly loaded host suitable to also act as a discovery backend) or create a node for the purpose. We shall refer to this node in the following text as the `registry`. Create the discovery backend as follows:
 
         $ docker run -d --restart=always -p 8500:8500 --name=consul progrium/consul -server -bootstrap
@@ -29,83 +27,29 @@ To proceed you must have created a set of nodes in the SCSSNebula cloud, and con
 
     To secure the swarm, we need to generate a set of TLS key pairs for the managers and swam nodes. These will be used for the swarm only, by the swarm software containers, and are not to be confused with TLS configuration you may have performed to secure docker client to engine communication. 
 
-    Login to your master node, create a directory `swarm` somewhere persistent in your file system and and execute the following to create a private key for our new CA.
-
-        $ mkdir -p /etc/docker/ssl/swarm         # this is where i will put all the certs for swarm
-        $ cd /etc/docker/ssl/swarm
-        $ openssl genrsa -out ca-priv-key.pem 2048
-        Generating RSA private key, 2048 bit long modulus
-        ........................................+++
-        ...+++
-        e is 65537 (0x10001)
-
-    Next create a public key called ca.pem for the CA (You can ignore the optional details for the key generation):
-
-        $ openssl req -config /usr/lib/ssl/openssl.cnf -new -key ca-priv-key.pem -x509 -days 1825 -out ca.pem
-        You are about to be asked to enter information that will be incorporated
-        into your certificate request.
-        What you are about to enter is what is called a Distinguished Name or a DN.
-        There are quite a few fields but you can leave some blank
-        For some fields there will be a default value,
-        If you enter '.', the field will be left blank.
-        -----
-        Country Name (2 letter code) [AU]:IE
-                   ...
-        $ ls
-        ca.pem	ca-priv-key.pem  
-
-    We now have a configured CA server with a public and private key pair. We are ready to use these to create keys for our swarm managers, nodes and remote docker engine clients. The process is the same for each kind of node. For each node `NODENAME`, perform the following (replacing NODENAME with a name for the node in question, being sure not to reuse a name if you are creating keys for more than one node):
-
-        
-        $ openssl genrsa -out NODENAME-priv-key.pem 2048
-        Generating RSA private key, 2048 bit long modulus
-        ............................................................+++
-        ........+++
-        e is 65537 (0x10001)
-        $ openssl req -subj "/CN=swarm" -new -key NODENAME-priv-key.pem -out NODENAME.csr
-        $ openssl x509 -req -days 1825 -in NODENAME.csr -CA ca.pem -CAkey ca-priv-key.pem -CAcreateserial -out NODENAME-cert.pem -extensions v3_req -extfile /usr/lib/ssl/openssl.cnf
-        Signature ok
-        subject=/CN=swarm
-        Getting CA Private Key
-        $ ls
-        ca.pem	ca-priv-key.pem  ca.srl  NODENAME-cert.pem  NODENAME.csr  NODENAME-priv-key.pem
-    
-    When you are finished, your directory will include two files, named in form of `NODENAME-cert.pem` and `NODENAME-priv-key.pem` for each node you intend to configure. Next, we install these certificates to the nodes. 
-
-    1. If your nodes are _boot2docker_ based, then perform the following, to copy these files and the file `ca.pem` to the appropriate location on the remote host:
-
-            $ docker-machine ssh NODENAME "sudo mkdir -p /var/lib/boot2docker/swarm-certs"
-            $ cat ca.pem | docker-machine ssh NODENAME "sudo sh -c \"cat - > /var/lib/boot2docker/swarm-certs/ca.pem\""
-            $ cat NODENAME-cert.pem | docker-machine ssh NODENAME "sudo sh -c \"cat - > /var/lib/boot2docker/swarm-certs/swarm.pem\""
-            $ cat NODENAME-priv-key.pem | docker-machine ssh NODENAME "sudo sh -c \"cat - > /var/lib/boot2docker/swarm-certs/key.pem\""
-
-        Once these commands are complete, you can delete all files on the local machine with names of the form `NODENAME-cert.pem` , `NODENAME.csr` and `NODENAME-priv-key.pem`.
-
         As we probably want to perform this across a set of nodes, for simplicity, the following script collects all relevant operations for node configuration, such that executing `configure-b2d-swarm NODENAME ca.pem ca-priv-key.pem` will configure the node NODENAME:
 
-            echo "Configuring node $1 as swarm member."
+    ```bash
+    echo "Configuring node $1 as swarm member."
 
-            if [ "$#" -ne 3 ] ; then
-              echo "Usage: $0 MACHINE_NAME ca.pem ca-priv-key.pem" >&2
-              echo "    Configures the machine for TLS access as member of the swarm." >&2
-              exit 1
-            fi
-        
-            openssl genrsa -out $1-priv-key.pem 2048
-            openssl req -subj "/CN=swarm" -new -key $1-priv-key.pem -out $1.csr
-            openssl x509 -req -days 1825 -in $1.csr -CA $2 -CAkey $3 -CAcreateserial -out $1-cert.pem -extensions v3_req -extfile /usr/lib/ssl/openssl.cnf
-            docker-machine ssh $1 "sudo mkdir -p /var/lib/boot2docker/swarm-certs"
-            cat $2 | docker-machine ssh X "sudo sh -c \"cat - > /var/lib/boot2docker/swarm-certs/ca.pem\""
-            cat $1-cert.pem | docker-machine ssh $1 "sudo sh -c \"cat - > /var/lib/boot2docker/swarm-certs/cert.pem\""
-            cat $1-priv-key.pem | docker-machine ssh $1 "sudo sh -c \"cat - > /var/lib/boot2docker/swarm-certs/key.pem\""
-            rm $1-priv-key.pem       # these files no longer needed locally
-            rm $1-cert.pem
-            rm $1.csr
-            echo "Configuration complete."
+    if [ "$#" -ne 3 ] ; then
+      echo "Usage: $0 MACHINE_NAME ca.pem ca-priv-key.pem" >&2
+      echo "    Configures the machine for TLS access as member of the swarm." >&2
+      exit 1
+    fi
 
-    2. If your nodes are not _boot2docker_ based (for example, perhaps your docker client machine) then ensure that each of the files `ca.pem`, `NODENAME-cert.pem` and `NODENAME-priv-key.pem` are copied to an appropriate location on the remote host. The `ca.pem` certificate must be added to the set of trusted certificates. The other two will be used to configure access to the Docker swarm. For example:
-
-        FINISH
+    openssl genrsa -out $1-priv-key.pem 2048
+    openssl req -subj "/CN=swarm" -new -key $1-priv-key.pem -out $1.csr
+    openssl x509 -req -days 1825 -in $1.csr -CA $2 -CAkey $3 -CAcreateserial -out $1-cert.pem -extensions v3_req -extfile /usr/lib/ssl/openssl.cnf
+    docker-machine ssh $1 "sudo mkdir -p /var/lib/boot2docker/swarm-certs"
+    cat $2 | docker-machine ssh X "sudo sh -c \"cat - > /var/lib/boot2docker/swarm-certs/ca.pem\""
+    cat $1-cert.pem | docker-machine ssh $1 "sudo sh -c \"cat - > /var/lib/boot2docker/swarm-certs/cert.pem\""
+    cat $1-priv-key.pem | docker-machine ssh $1 "sudo sh -c \"cat - > /var/lib/boot2docker/swarm-certs/key.pem\""
+    rm $1-priv-key.pem       # these files no longer needed locally
+    rm $1-cert.pem
+    rm $1.csr
+    echo "Configuration complete."
+    ```
 
     If you have followed the steps outlined, you now have compatible certificates installed on all machines, with the certificate authority that generated these certificates trusted by all machines. We are now ready to run the swam software on our nodes, using these certificates to secure host-to-host communication.
 
