@@ -27,28 +27,12 @@ To proceed you must have created a set of nodes in the SCSSNebula cloud, and con
 
     To secure the swarm, we need to generate a set of TLS key pairs for the managers and swam nodes. These will be used for the swarm only, by the swarm software containers, and are not to be confused with TLS configuration you may have performed to secure docker client to engine communication. 
 
-        As we probably want to perform this across a set of nodes, for simplicity, the following script collects all relevant operations for node configuration, such that executing `configure-b2d-swarm NODENAME ca.pem ca-priv-key.pem` will configure the node NODENAME:
+    As we probably want to perform this across a set of nodes, for simplicity, the following script collects all relevant operations for node configuration, such that executing `swarm-config.sh NODENAME ca.pem ca-priv-key.pem` will configure the node NODENAME:
 
+
+    Download the script
     ```bash
-    echo "Configuring node $1 as swarm member."
-
-    if [ "$#" -ne 3 ] ; then
-      echo "Usage: $0 MACHINE_NAME ca.pem ca-priv-key.pem" >&2
-      echo "    Configures the machine for TLS access as member of the swarm." >&2
-      exit 1
-    fi
-
-    openssl genrsa -out $1-priv-key.pem 2048
-    openssl req -subj "/CN=swarm" -new -key $1-priv-key.pem -out $1.csr
-    openssl x509 -req -days 1825 -in $1.csr -CA $2 -CAkey $3 -CAcreateserial -out $1-cert.pem -extensions v3_req -extfile /usr/lib/ssl/openssl.cnf
-    docker-machine ssh $1 "sudo mkdir -p /var/lib/boot2docker/swarm-certs"
-    cat $2 | docker-machine ssh X "sudo sh -c \"cat - > /var/lib/boot2docker/swarm-certs/ca.pem\""
-    cat $1-cert.pem | docker-machine ssh $1 "sudo sh -c \"cat - > /var/lib/boot2docker/swarm-certs/cert.pem\""
-    cat $1-priv-key.pem | docker-machine ssh $1 "sudo sh -c \"cat - > /var/lib/boot2docker/swarm-certs/key.pem\""
-    rm $1-priv-key.pem       # these files no longer needed locally
-    rm $1-cert.pem
-    rm $1.csr
-    echo "Configuration complete."
+    wget https://raw.githubusercontent.com/KillianDavitt/docker-nebula/master/scripts/swarm-config.sh
     ```
 
     If you have followed the steps outlined, you now have compatible certificates installed on all machines, with the certificate authority that generated these certificates trusted by all machines. We are now ready to run the swam software on our nodes, using these certificates to secure host-to-host communication.
