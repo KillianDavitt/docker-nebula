@@ -1,1 +1,1 @@
-sudo cp html/* /var/www/html/docker/
+cp html/* /var/www/html/docker/

@@ -437,7 +437,7 @@ html, body {
 	margin:  auto;
     padding-right:  1em;
     padding-left:  1em;
-    max-width:  50em;
+    max-width:  80em;
      color: black;
 }
 *:not('#mkdbuttons') {
