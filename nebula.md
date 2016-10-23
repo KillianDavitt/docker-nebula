@@ -141,15 +141,9 @@ We can create boot2docker virtual machines using either a UI based process along
 
 5. Your virtual machine should now be running. Try to login with `ssh docker@a.b.c.d`, with the appropriate ip address obviously. The ip address of your SCSSNebula nodes are listed on the Compute page. If you used the aforementioned image to create your machine, the login password the `docker` account will be `tcuser`. 
 
-### Create virtual machine using docker-machine ###
-`docker-machine` is a client side tool that provides a simple command line interface that supports the creation of Docker virtual machines (known in the jargon as 'provisioning') and the management of groups of Docker machines. It is very easy to use, arguably easier to use that the SCSSnebula UI process described above, but it must be installed before use. 
-
-Lets install docker-machine on the debian machine we made above.
-
-`docker-machine` supports the creation of Docker machines on a number of cloud platforms. There is an OpenNebula plugin that makes it possible to use `docker-machine` with OpenNebula clouds, such as SCSSNebula. We will install both `docker-machine` and the plugin, assuming our target machine is an SCSSNebula node based on Debian. Consult [documentation](https://docs.docker.com/machine/install-machine/) for details on how to install on other platforms.  
-
 #### Install Docker-machine ####
-Note that all the following presumes that you have network access on the install machine. Note also that if you installed Docker on a Mac or a Windows machine using the recommended methods, then you will already have docker-machine installed: proceed to the section on installation of the *docker-machine-opennebula plugin*.For the remainder of this section we will presume that the target machine is a standard DebianJessie instance in the SCSSNebula cloud, built using the process described above.
+docker-machine basically allows us to create new nebula nodes without visiting the webui. It also simplifies the process by automatically setting up ssh keys for login.
+We are installing docker-machine on our debian node.
 
 To install docker-machine, proceed as follows:
 
@@ -168,17 +162,6 @@ To install docker-machine, proceed as follows:
 2. Check the installation by displaying the Machine version:
     ```bash
     docker-machine version
-    ```
-3. Retrieve the shell completion scripts repository from GitHub, and follow the simple instructions at the top of each script to install them. Once installed, you can delete the repository.
-    
-    ```bash
-    git clone https://github.com/docker/machine/tree/master/contrib/completion/bash
-    ```
-    
-    Add the following to your `~/.bashrc` file:
-    
-    ```bash
-    echo "PS1='[\u@\h \W$(__docker_machine_ps1)]\$ '" >> ~/.bashrc
     ```
 
 ####Install the docker-machine-opennebula plugin ####
