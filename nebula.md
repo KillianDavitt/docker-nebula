@@ -182,18 +182,18 @@ To install docker-machine, proceed as follows:
 
         mkdir ~/gowork
    
-4. Add the following to your `~/.bashrc`:
+4. Put another config in bashrc:
 
-        export GOPATH=$HOME/gowork
+        echo "export GOPATH=$HOME/gowork" >> ~/.bashrc
 
-5. Also add the following to your PATH (via, for example, `~/.bashrc`):
+5. Another config for the bashrc:
 
-        export PATH=$PATH:$GOPATH/bin
+        echo "export PATH=$PATH:$GOPATH/bin" >> ~/.bashrc
 
 
     We will need this when we use docker with the OpenNebula plugin.
 
-6. Test your Go installation by adding a file `$GOPATH/src/github.com/[your Github username]/hello/hello.go` (you will need to make the directory structure) with the following contents:
+6. Test your Go installation by adding a file hello.go, put the following in it
     ```go
         package main
 
@@ -203,11 +203,9 @@ To install docker-machine, proceed as follows:
             fmt.Printf("hello, world\n")
         }
     ```
-    and execute the following command (don't forget that the environment variables we added above must be active in your shell):
+    and execute the following command:
 
-        $ go install github.com/[your Github username]/hello
-        $ $GOPATH/bin/hello
-        hello, world
+        go run hello.go
 
     If you see `hello, world` as above, then you have Go installed. 
 

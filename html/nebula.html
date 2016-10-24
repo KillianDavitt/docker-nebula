@@ -168,12 +168,12 @@ Environment=&quot;NO_PROXY=localhost,127.0.0.0/8,docker-registry.somecorporation
 <p>export PATH=$PATH:/usr/local/go/bin</p></li>
 <li><p>Next, setup a workspace for Go.</p>
 <pre><code>mkdir ~/gowork</code></pre></li>
-<li><p>Add the following to your <code>~/.bashrc</code>:</p>
-<pre><code>export GOPATH=$HOME/gowork</code></pre></li>
-<li><p>Also add the following to your PATH (via, for example, <code>~/.bashrc</code>):</p>
-<pre><code>export PATH=$PATH:$GOPATH/bin</code></pre>
+<li><p>Put another config in bashrc:</p>
+<pre><code>echo &quot;export GOPATH=$HOME/gowork&quot; &gt;&gt; ~/.bashrc</code></pre></li>
+<li><p>Another config for the bashrc:</p>
+<pre><code>echo &quot;export PATH=$PATH:$GOPATH/bin&quot; &gt;&gt; ~/.bashrc</code></pre>
 <p>We will need this when we use docker with the OpenNebula plugin.</p></li>
-<li><p>Test your Go installation by adding a file <code>$GOPATH/src/github.com/[your Github username]/hello/hello.go</code> (you will need to make the directory structure) with the following contents:</p>
+<li><p>Test your Go installation by adding a file hello.go, put the following in it</p>
 <div class="sourceCode"><pre class="sourceCode go"><code class="sourceCode go">    <span class="kw">package</span> main
 
     <span class="kw">import</span> <span class="st">&quot;fmt&quot;</span>
@@ -181,10 +181,8 @@ Environment=&quot;NO_PROXY=localhost,127.0.0.0/8,docker-registry.somecorporation
     <span class="kw">func</span> main() {
         fmt.Printf(<span class="st">&quot;hello, world</span><span class="ch">\n</span><span class="st">&quot;</span>)
     }</code></pre></div>
-<p>and execute the following command (don’t forget that the environment variables we added above must be active in your shell):</p>
-<pre><code>$ go install github.com/[your Github username]/hello
-$ $GOPATH/bin/hello
-hello, world</code></pre>
+<p>and execute the following command:</p>
+<pre><code>go run hello.go</code></pre>
 <p>If you see <code>hello, world</code> as above, then you have Go installed.</p></li>
 <li><p>Execute the following command to install GoDep:</p>
 <pre><code>$ go get github.com/tools/godep</code></pre></li>
