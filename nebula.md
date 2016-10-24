@@ -25,7 +25,7 @@ The UI can't be accessed outside of college.
 
         _Note that you can add multiple disks to a template. However, the image we have cloned is large enough for normal use and so we will not add a second disk._ 
 
-    2. On the Network tab, select the `ResearchNet [routed]` network.
+    2. On the Network tab, select the `TeachingNET [routed]` network.
 
     3. On the Context tab, ensure `Add Network Contextualization` checkbox is selected.
 
