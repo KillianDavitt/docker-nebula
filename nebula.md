@@ -193,7 +193,7 @@ To install docker-machine, proceed as follows:
 
     We will need this when we use docker with the OpenNebula plugin.
 
-6. Test your Go installation by adding a file hello.go, put the following in it
+6. Test your Go installation by creating a file hello.go, put the following in it
     ```go
         package main
 
