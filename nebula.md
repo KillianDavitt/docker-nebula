@@ -139,7 +139,7 @@ We can create boot2docker virtual machines using either a UI based process along
 
 4. Now we have a template, we will create a virtual machine. Select the *Virtual Machines* sub-menu option under the *Virtual Resources* menu. Create a new instance and in the dialog box, name it and select the template you just created. Click click `Create`. Again, because the boot2docker image has been designed to be very small, the virtual machine should be created very quickly, and you should not have to wait long for its creation to complete. 
 
-5. Your virtual machine should now be running. Try to login with `ssh docker@a.b.c.d`, with the appropriate ip address obviously. The ip address of your SCSSNebula nodes are listed on the Compute page. If you used the aforementioned image to create your machine, the login password the `docker` account will be `tcuser`. 
+5. Try to login with `ssh docker@a.b.c.d`, with the appropriate ip address. The ip address of your SCSSNebula nodes are listed on the webui. The password will be `tcuser`. 
 
 #### Install Docker-machine ####
 docker-machine basically allows us to create new nebula nodes without visiting the webui. It also simplifies the process by automatically setting up ssh keys for login.
