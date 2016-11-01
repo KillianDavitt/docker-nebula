@@ -76,10 +76,6 @@ Docker is installed. However, we do not have Docker configured to access Docker 
         [Service]
         Environment="HTTP_PROXY=http://www-proxy.scss.tcd.ie:8080/"
 
-    If you have internal Docker registries that you need to contact without proxying you can specify them via the `NO_PROXY` environment variable:
-
-        Environment="HTTP_PROXY=http://www-proxy.scss.tcd.ie:8080/"
-        Environment="NO_PROXY=localhost,127.0.0.0/8,docker-registry.somecorporation.com"
 
 3. Flush changes:
     ```bash
@@ -119,13 +115,7 @@ We can create boot2docker virtual machines using either a UI based process along
 
 1. Open the [user interface](https://scssnebulaselfservice.scss.tcd.ie).
 
-2. Click on the *Images* sub-menu option (found in the *Virtual Resources* menu), and look for an `[VM] boot2docker` image.If there is no such image, you will need to install the `boot2docker` image into the SCSSNebula as follows:
-
-    1. Open the Marketplace and search for `boot2docker` and select it. Check the information, which should describe an image built to support _OpenNebula Contextualization_. Import this image, giving it a name such as `[VM] boot2docker`.
-
-    2. Click the *Image* sub-menu again and find your `[VM] boot2docker` image.
-
-3. Next, we must create a Template. Select the *Templates* sub-menu in the *Virtual Resources* menu create a new template. The template system is complex but we will perform a minimal configuration. 
+2. Next, we must create a Template. Select the *Templates* sub-menu in the *Virtual Resources* menu create a new template. The template system is complex but we will perform a minimal configuration. 
  
     1. On the storage tab, select your boot2docker as Disk 0. 
 
@@ -137,9 +127,9 @@ We can create boot2docker virtual machines using either a UI based process along
 
     4. That is sufficient configuration. Create the template. 
 
-4. Now we have a template, we will create a virtual machine. Select the *Virtual Machines* sub-menu option under the *Virtual Resources* menu. Create a new instance and in the dialog box, name it and select the template you just created. Click click `Create`. Again, because the boot2docker image has been designed to be very small, the virtual machine should be created very quickly, and you should not have to wait long for its creation to complete. 
+3. Now we have a template, we will create a virtual machine. Select the *Virtual Machines* sub-menu option under the *Virtual Resources* menu. Create a new instance and in the dialog box, name it and select the template you just created. Click click `Create`. Again, because the boot2docker image has been designed to be very small, the virtual machine should be created very quickly, and you should not have to wait long for its creation to complete. 
 
-5. Try to login with `ssh docker@a.b.c.d`, with the appropriate ip address. The ip address of your SCSSNebula nodes are listed on the webui. The password will be `tcuser`. 
+4. Try to login with `ssh docker@a.b.c.d`, with the appropriate ip address. The ip address of your SCSSNebula nodes are listed on the webui. The password will be `tcuser`. 
 
 #### Install Docker-machine ####
 docker-machine basically allows us to create new nebula nodes without visiting the webui. It also simplifies the process by automatically setting up ssh keys for login.

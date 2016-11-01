@@ -102,10 +102,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>mkdir /etc/systemd/system/docker.service.d</p></li>
 <li><p>Now create a file called <code>/etc/systemd/system/docker.service.d/http-proxy.conf</code> that adds the HTTP_PROXY environment variable:</p>
 <pre><code>[Service]
-Environment=&quot;HTTP_PROXY=http://www-proxy.scss.tcd.ie:8080/&quot;</code></pre>
-<p>If you have internal Docker registries that you need to contact without proxying you can specify them via the <code>NO_PROXY</code> environment variable:</p>
-<pre><code>Environment=&quot;HTTP_PROXY=http://www-proxy.scss.tcd.ie:8080/&quot;
-Environment=&quot;NO_PROXY=localhost,127.0.0.0/8,docker-registry.somecorporation.com&quot;</code></pre></li>
+Environment=&quot;HTTP_PROXY=http://www-proxy.scss.tcd.ie:8080/&quot;</code></pre></li>
 <li><p>Flush changes:</p>
 <div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">sudo</span> systemctl daemon-reload</code></pre></div></li>
 <li><p>Verify that the configuration has been loaded:</p>
@@ -126,11 +123,6 @@ Environment=&quot;NO_PROXY=localhost,127.0.0.0/8,docker-registry.somecorporation
 <h3 id="create-virtual-machine-using-the-newer-ui">Create virtual machine using the newer UI</h3>
 <ol style="list-style-type: decimal">
 <li><p>Open the <a href="https://scssnebulaselfservice.scss.tcd.ie">user interface</a>.</p></li>
-<li><p>Click on the <em>Images</em> sub-menu option (found in the <em>Virtual Resources</em> menu), and look for an <code>[VM] boot2docker</code> image.If there is no such image, you will need to install the <code>boot2docker</code> image into the SCSSNebula as follows:</p>
-<ol style="list-style-type: decimal">
-<li><p>Open the Marketplace and search for <code>boot2docker</code> and select it. Check the information, which should describe an image built to support <em>OpenNebula Contextualization</em>. Import this image, giving it a name such as <code>[VM] boot2docker</code>.</p></li>
-<li><p>Click the <em>Image</em> sub-menu again and find your <code>[VM] boot2docker</code> image.</p></li>
-</ol></li>
 <li><p>Next, we must create a Template. Select the <em>Templates</em> sub-menu in the <em>Virtual Resources</em> menu create a new template. The template system is complex but we will perform a minimal configuration.</p>
 <ol style="list-style-type: decimal">
 <li>On the storage tab, select your boot2docker as Disk 0.</li>
