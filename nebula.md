@@ -121,7 +121,7 @@ We can create boot2docker virtual machines using either a UI based process along
 
     Add a second volatile disk at this point, of a reasonable size to store containers. The boot2docker image is configured to expect a volatile second disk for storing containers and that will be mounted into the file system directory structure.
 
-    2. On the Network tab, select the `ResearchNet [routed]` network.
+    2. On the Network tab, select the `TeachingNet [routed]` network.
 
     3. On the Context tab, ensure `Add Network Contextualization` checkbox is selected.
 
